@@ -6,13 +6,25 @@ from django.db import models
 
 
 class User(models.Model):
-    pass
+    # needs tutor and tutee specific fields
+    tutor_mode = models.BooleanField()  # true if in tutor_mode
+    # also needs fields to contain everything associated with a profile page
 
 
 class Request(models.Model):
-    pass
+    # need a field that maps the request to the user that wrote it (one-to-one relationship)
+    title = models.CharField(max_length=100)  # the title of the request
+    location = models.CharField(max_length=50)  # the location of the tutee (as specified by the tutee)
+    pub_date = models.DateTimeField('date published')  # when it was published
+    description = models.CharField(max_length=1000)  # a description written by the tutee
+    # need a field to track the list of tutors that have offered their help
+    # maybe need a field for proposed price?
+    def __str__(self):
+        return self.title
 
 
 class Conversation(models.Model):
+    # need a field that maps the conversation to both users
+    # need a field that tracks the list of sent messages
     pass
 

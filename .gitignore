@@ -132,6 +132,3 @@ dmypy.json
 
 # pytype static type analyzer
 .pytype/
-
-# database
-*.sqlite3

@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # Database
-/quicktutor/db.sqlite3
+quicktutor/db.sqlite3

@@ -8,16 +8,16 @@
     <title>Feed</title>
 </head>
 <body>
-
-{% if requests_list %}
-    <ul>
-    {% for request in requests_list %}
-        <li>{{ request.title }}</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No requests are available.</p>
-{% endif %}
+    <h1>this page is for tutors; will display a feed of requests for them to view, offer their help, etc.</h1>
+    {% if requests_list %}
+        <ul>
+        {% for request in requests_list %}
+            <li>{{ request.title }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No requests are available.</p>
+    {% endif %}
 
 </body>
 </html>

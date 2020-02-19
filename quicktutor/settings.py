@@ -145,11 +145,4 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-<<<<<<< HEAD
-LOGIN_REDIRECT_URL = '/'
-
-
-django_heroku.settings(locals())
-=======
 LOGIN_REDIRECT_URL = '/redirect/'
->>>>>>> 5370f95b531ae845b69857e953f6f61299c4931c

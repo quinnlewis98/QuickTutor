@@ -4,7 +4,7 @@ from .models import *
 
 
 def index(request):
-    return HttpResponse("let's get this money (this is the app index)")
+    return render(request, 'app/index.html')
 
 def feed(request):
     requests_list = Request.objects.order_by('-pub_date')[:]

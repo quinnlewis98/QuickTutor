@@ -135,4 +135,14 @@ AUTHENTICATION_BACKENDS = (
 
 SITE_ID = 1
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '1046796577754-mpavlkn7goiodk7r27fiu5s7h9ms4it9.apps.googleusercontent.com',
+            'secret': 'K04WVVT8-g3jlb4FmByX_03K',
+            'key': ''
+        }
+    }
+}
+
 LOGIN_REDIRECT_URL = '/'

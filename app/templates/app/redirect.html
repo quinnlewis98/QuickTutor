@@ -17,7 +17,7 @@
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
           <h1 class="display-4">Hello, {{ user }}.</h1>
-          <p class="lead"> Select a user mode to continue.</p>
+          <p class="lead"> What would you like to do?</p>
         </div>
     </div>
 
@@ -26,22 +26,22 @@
         <div class="col-sm-6">
           <div class="card">
             <div class="card-header">
-              <h2 class="card-title">Tutor Mode</h2>
+              <h2 class="card-title">Tutors</h2>
             </div>
             <div class="card-body">
-              <p class="card-text mode-description">You'll be able to view a feed of currently active requests, offer your help, and more!</p>
-              <button type="button" class="btn btn-primary btn-lg mode-btn" onclick="location.href = '/feed/';">Select Mode</button>
+              <p class="card-text mode-description">Tutoring? Click here to view a feed of active requests.</p>
+              <button type="button" class="btn btn-primary btn-lg mode-btn" onclick="location.href = '/feed/';">View Feed</button>
             </div>
           </div>
         </div>
         <div class="col-sm-6">
           <div class="card">
             <div class="card-header">
-              <h2 class="card-title">Tutee Mode</h2>
+              <h2 class="card-title">Tutees</h2>
             </div>
             <div class="card-body">
-              <p class="card-text mode-description">You'll be able to create requests for help, connect with tutors, and more!</p>
-            <button type="button" class="btn btn-primary btn-lg mode-btn" onclick="location.href = '/myRequest/';">Select Mode</button>
+              <p class="card-text mode-description">Need help? Click here to create a request.</p>
+            <button type="button" class="btn btn-primary btn-lg mode-btn" onclick="location.href = '/myRequest/';">Make a Request</button>
             </div>
           </div>
         </div>

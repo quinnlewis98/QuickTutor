@@ -17,8 +17,8 @@ class Request(models.Model):
     location = models.CharField(max_length=50)  # the location of the tutee (as specified by the tutee)
     pub_date = models.DateTimeField('date published')  # when it was published
     description = models.CharField(max_length=1000)  # a description written by the tutee
+    user = models.CharField(max_length=100)
     # need a field to track the list of tutors that have offered their help
-    # maybe need a field for proposed price?
     def __str__(self):
         return self.title
 

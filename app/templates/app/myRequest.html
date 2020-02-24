@@ -5,16 +5,53 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Our CSS -->
+    <link rel="stylesheet" type="text/css" href="../../static/app/style.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>My Request</title>
   </head>
   <body>
-    <h3>This is where they will either create a request or display their current active request.</h3>
-    <button type="button" style="margin:5px;" class="btn btn-primary btn-lg" onclick="location.href = 'http://localhost:8000/profile/';">Profile Page</button><br>
-    <button type="button" style="margin:5px;" class="btn btn-primary btn-lg" onclick="location.href = 'http://localhost:8000/contacts/';">Contacts Page</button><br>
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4">Tutee Requests Page</h1>
+        <p class="lead">This is where they will either create a request or display their current active request.</p>
+        <button type="button" style="margin:5px;" class="btn btn-primary btn-lg" onclick="location.href = 'http://localhost:8000/profile/';">Profile Page</button><br>
+        <button type="button" style="margin:5px;" class="btn btn-primary btn-lg" onclick="location.href = 'http://localhost:8000/contacts/';">Contacts Page</button><br>
+      </div>
+    </div>
 
+    <!-- If they have no active requests... -->
+    <div class="container">
+      <h5>You have no active requests; create one below!</h5>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card text-white bg-secondary" style="padding:10px">
+                        <div class="card-header">
+                            <h2>My Request</h2>
+                        </div> <br>
+                        <form action="/myRequest/" method="post">
+                          {% csrf_token %}
+                            <div class="form-group">
+                                <label for="title"><h5>Title</h5></label>
+                                <input id="title" class="form-control" type="text" name="title" maxlength="100" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                    <label for="location"><h5>Location</h5></label>
+                                    <input id="location" class="form-control" type="text" name="location" maxlength="50" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description"><h5>Description</h5></label>
+                                <input id="description" class="form-control" type="text" name="description" maxlength="300" required>
+                                <small class="form-text text-white">Include an estimated fee.</small>
+                            </div>
+                            <input type="submit" value="Submit" class="btn btn-success btn-lg" style="float:right; margin:0px 20px"/>
+                        </form> <br>
+          </div>
+        </div>
+      </div>
+    </div> <br>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

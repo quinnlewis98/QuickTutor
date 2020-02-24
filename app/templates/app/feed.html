@@ -17,7 +17,7 @@
     {% if requests_list %}
         <ul>
         {% for request in requests_list %}
-            <li>{{ request.title }}</li>
+            <li>{{ request.title }} | from {{ request.user }}</li>
         {% endfor %}
         </ul>
     {% else %}

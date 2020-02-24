@@ -2,9 +2,7 @@ from django import forms
 
 
 class RequestForm(forms.Form):
-    '''suggestion_name = forms.CharField(label='Name', max_length=50,
-                                      widget=forms.TextInput(attrs={'class': 'form-control'}))
-    description = forms.CharField(label='Description', max_length=300,
-                                  widget=forms.Textarea(attrs={'class': 'form-control'}))'''
-
-    # should have something for each field defined in the request model
+    title = forms.CharField(label='Title', max_length=100)  # the title of the request
+    location = forms.CharField(max_length=50)  # the location of the tutee (as specified by the tutee)
+    pub_date = forms.DateTimeField()  # when it was published
+    description = forms.CharField(max_length=1000)  # a description written by the tutee

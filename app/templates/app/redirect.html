@@ -12,10 +12,21 @@
     <title>Redirect</title>
   </head>
   <body><br>
-    <h1 class="text-center">Log in as...</h1><br>
-    <div class="col text-center">
-      <button type="button" style="margin:5px;" class="btn btn-primary btn-lg" onclick="location.href = 'http://localhost:8000/feed/';">Tutor</button><br>
-      <button type="button" style="margin:5px;" class="btn btn-primary btn-lg" onclick="location.href = 'http://localhost:8000/myRequest/';">Tutee</button><br>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">Hello, {{ user }}.</h1>
+          <p class="lead"> Select a mode. idk why the buttons are so small lol</p>
+        </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary btn-lg" onclick="location.href = '/feed/';">Tutor</button>
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary btn-lg" onclick="location.href = '/myRequest/';">Tutee</button>
+        </div>
+      </div>
     </div>
     
 

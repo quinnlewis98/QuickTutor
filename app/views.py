@@ -20,7 +20,6 @@ def redirect(request):
         return HttpResponseRedirect('/')
 
 
-
 def feed(request):
     if request.user.is_authenticated:
         requests_list = Request.objects.order_by('-pub_date')[:]
@@ -45,7 +44,7 @@ def myRequest(request):
             new_request.location = location
             new_request.description = description
             new_request.pub_date = timezone.now()
-            new_request.user = request.user
+            new_request.user = request.user.username
             new_request.save()
             print("request saved")
         return render(request, 'app/myRequest.html')

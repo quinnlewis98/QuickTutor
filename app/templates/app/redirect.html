@@ -16,10 +16,15 @@
   <body><br>
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-          <h1 class="display-4">Hello, {{ user }}.</h1>
+          <h1 id="h1" class="display-4">Hello.</h1>
           <p class="lead"> What would you like to do?</p>
         </div>
     </div>
+
+  <script>
+    var str = "{{ user }}"
+    document.getElementById("h1").innerHTML = "Hello, " + str.charAt(0).toUpperCase() + str.substring(1) + ".";
+  </script>
 
     <div class="container">
       <div class="row">
@@ -47,8 +52,6 @@
         </div>
       </div>
     </div>
-    
-
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -44,33 +44,42 @@
 
     <!-- If they have no active requests... -->
     <div class="container">
-      <h5>You have no active requests; create one below!</h5>
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="card text-white bg-secondary" style="padding:10px">
-                        <div class="card-header">
-                            <h2>My Request</h2>
-                        </div> <br>
-                        <form action="/myRequest/" method="post">
-                          {% csrf_token %}
-                            <div class="form-group">
-                                <label for="title"><h5>Title</h5></label>
-                                <input id="title" class="form-control" type="text" name="title" maxlength="100" required autofocus>
-                            </div>
-                            <div class="form-group">
-                                    <label for="location"><h5>Location</h5></label>
-                                    <input id="location" class="form-control" type="text" name="location" maxlength="50" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="description"><h5>Description</h5></label>
-                                <input id="description" class="form-control" type="text" name="description" maxlength="300" required>
-                                <small class="form-text text-white">Include an estimated fee.</small>
-                            </div>
-                            <input type="submit" value="Submit" class="btn btn-success btn-lg" style="float:right; margin:0px 20px"/>
-                        </form> <br>
-          </div>
+      {% if requests_list %}
+        {% for request in requests_list %}
+            {% if request.user == user.username %}
+              <h5>You currently have an active request: </h5>
+              <h5> &nbsp;&nbsp;&nbsp; {{ request.title }} </h5>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+    <h5>You have no active requests; create one below!</h5>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card text-white bg-secondary" style="padding:10px">
+                      <div class="card-header">
+                          <h2>My Request</h2>
+                      </div> <br>
+                      <form action="/myRequest/" method="post">
+                        {% csrf_token %}
+                          <div class="form-group">
+                              <label for="title"><h5>Title</h5></label>
+                              <input id="title" class="form-control" type="text" name="title" maxlength="100" required autofocus>
+                          </div>
+                          <div class="form-group">
+                                  <label for="location"><h5>Location</h5></label>
+                                  <input id="location" class="form-control" type="text" name="location" maxlength="50" required>
+                          </div>
+                          <div class="form-group">
+                              <label for="description"><h5>Description</h5></label>
+                              <input id="description" class="form-control" type="text" name="description" maxlength="300" required>
+                              <small class="form-text text-white">Include an estimated fee.</small>
+                          </div>
+                          <input type="submit" value="Submit" class="btn btn-success btn-lg" style="float:right; margin:0px 20px"/>
+                      </form> <br>
         </div>
       </div>
+    </div>
+    {% endif %}
     </div> <br>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

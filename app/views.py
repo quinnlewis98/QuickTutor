@@ -35,6 +35,12 @@ def feed(request):
 
 def myRequest(request):
     if request.user.is_authenticated:
+        requests_list = Request.objects.order_by('-pub_date')[:]
+        # process each request in a for loop
+        context = {
+            'requests_list': requests_list,
+        }
+
         if request.method == 'POST':
             title = request.POST['title']
             location = request.POST['location']
@@ -47,7 +53,7 @@ def myRequest(request):
             new_request.user = request.user.username
             new_request.save()
             print("request saved")
-        return render(request, 'app/myRequest.html')
+        return render(request, 'app/myRequest.html', context)
     else:
         return HttpResponseRedirect('/')
 

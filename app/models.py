@@ -18,6 +18,7 @@ class Request(models.Model):
     pub_date = models.DateTimeField('date published')  # when it was published
     description = models.CharField(max_length=1000)  # a description written by the tutee
     user = models.CharField(max_length=100)
+    #user = models.ForeignKey('User', on_delete=models.CASCADE)
     # need a field to track the list of tutors that have offered their help
     def __str__(self):
         return self.title

@@ -9,11 +9,21 @@
 
         <!-- Bootstrap -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <!-- Our CSS -->
+        <link rel="stylesheet" type="text/css" href="static/app/style.css">
     </head>
     <body>
-        <h1>Welcome to QuickTutor!</h1>
-        <p>You're logged in as {{ user }}.</p>
-        <a href="{% provider_login_url "google" %}">Login</a>
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+              <h1 class="display-4">Welcome to QuickTutor.</h1>
+                <span class="lead">
+                    Sign-in here:
+                    <a class="btn btn-primary" href="{% provider_login_url "google" %}">Google Login</a>
+                </span>
+            </div>
+        </div>
+
+        <p class="lead" align="center">~Need a cool background and stuff~</p>
 
         <!-- Some required Bootstrap stuff -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

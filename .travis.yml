@@ -4,9 +4,11 @@ python:
 "3.5"
 "3.7"
 
+
 os:
-linux
-osx
+  linux
+  osx
+  
 virtualenv:
   system_site_packages: true
 

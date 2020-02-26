@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.utils import timezone
+from django.contrib.auth import get_user
 from .models import *
 from .forms import *
 
@@ -50,9 +51,13 @@ def myRequest(request):
             new_request.location = location
             new_request.description = description
             new_request.pub_date = timezone.now()
-            new_request.user = request.user.username
+            new_request.user = request.user.email
             new_request.save()
-            print("request saved")
+            user = get_user(request)
+            user.has_active_request = True
+            user.save()
+            print("request processed")
+            return HttpResponseRedirect('/feed')
         return render(request, 'app/myRequest.html', context)
     else:
         return HttpResponseRedirect('/')

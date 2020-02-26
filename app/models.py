@@ -1,13 +1,48 @@
 from django.db import models
-#from django.contrib.auth import models as other_models <--- django has a built in User model that we may want to use
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
-# Create your models here.
-# we will need these models at least
+class UserManager(BaseUserManager):
+    # Need a new model manager since we removed the username field
+
+    use_in_migrations = True
+
+    # all-auth creates our users, but createsuperuser will call this
+    def _create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    # for creating regular users - probably won't need
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
 
 
-class User(models.Model):
+class User(AbstractUser):
     # needs fields to contain everything associated with a profile page
-    pass
+    username = None
+    email = models.EmailField(('email address'), unique=True)
+    has_active_request = models.BooleanField(default=False)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
 
 
 class Request(models.Model):

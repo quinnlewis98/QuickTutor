@@ -147,6 +147,12 @@ SOCIALACCOUNT_PROVIDERS = {
 
 LOGIN_REDIRECT_URL = '/redirect/'
 
+AUTH_USER_MODEL = 'app.User'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
 try:
     # configure django app for heroku
     import django_heroku

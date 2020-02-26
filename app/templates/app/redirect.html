@@ -16,15 +16,15 @@
   <body><br>
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-          <h1 id="h1" class="display-4">Hello.</h1>
+          <h1 id="h1" class="display-4">Hello, {{ user.first_name }}.</h1>
           <p class="lead"> What would you like to do?</p>
         </div>
     </div>
 
-  <script>
+  <!--<script>
     var str = "{{ user }}"
     document.getElementById("h1").innerHTML = "Hello, " + str.charAt(0).toUpperCase() + str.substring(1) + ".";
-  </script>
+  </script>-->
 
     <div class="container">
       <div class="row">

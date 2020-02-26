@@ -36,8 +36,9 @@
             </a>
           <div class="dropdown-menu">
             <a class="dropdown-item" href='http://localhost:8000/profile/' >My Profile</a>
-            <form action="/logout_view/" method="post">
-              <a class="dropdown-item" href='/#/' >Logout</a>
+            <form action="/myRequest/" method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type=submit name='action' value='Logout' class="dropdown-item">
             </form>
           </div>
         </ul>

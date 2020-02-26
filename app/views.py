@@ -21,21 +21,25 @@ def redirect(request):
     else:
         return HttpResponseRedirect('/')
 
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect('/')
 
 def feed(request):
     if request.user.is_authenticated:
-        requests_list = Request.objects.order_by('-pub_date')[:]
-        # process each request in a for loop
-        context = {
-            'requests_list': requests_list,
-        }
-        return render(request, 'app/feed.html', context)
+        # handle post request
+        if request.method == 'POST':
+            # If it's a 'logout' request...
+            if request.POST.get('action') == 'Logout':
+                logout(request)
+                return HttpResponseRedirect('/')
+        # handle get request
+        else:
+            requests_list = Request.objects.order_by('-pub_date')[:]
+            # process each request in a for loop
+            context = {
+                'requests_list': requests_list,
+            }
+            return render(request, 'app/feed.html', context)
     else:
         return HttpResponseRedirect('/')
-
 
 
 def myRequest(request):
@@ -68,6 +72,10 @@ def myRequest(request):
                 user.has_active_request = False
                 user.save()
                 return HttpResponseRedirect('/myRequest')
+            # If it's a 'logout' request...
+            elif request.POST.get('action') == 'Logout':
+                logout(request)
+                return HttpResponseRedirect('/')
 
         # Otherwise, a GET request. just loading the page
         else:
@@ -76,20 +84,37 @@ def myRequest(request):
                 'requests_list': requests_list,
             }
             return render(request, 'app/myRequest.html', context)
+    # If not authenticated
     else:
         return HttpResponseRedirect('/')
 
 
 def profile(request):
     if request.user.is_authenticated:
-        return render(request, 'app/profile.html')
+        # handle post request
+        if request.method == 'POST':
+            # If it's a 'logout' request...
+            if request.POST.get('action') == 'Logout':
+                logout(request)
+                return HttpResponseRedirect('/')
+        # handle get request
+        else:
+            return render(request, 'app/profile.html')
     else:
         return HttpResponseRedirect('/')
 
 
 def contacts(request):
     if request.user.is_authenticated:
-        return render(request, 'app/contacts.html')
+        # handle post request
+        if request.method == 'POST':
+            # If it's a 'logout' request...
+            if request.POST.get('action') == 'Logout':
+                logout(request)
+                return HttpResponseRedirect('/')
+        # handle get request
+        else:
+            return render(request, 'app/contacts.html')
     else:
         return HttpResponseRedirect('/')
 
@@ -98,7 +123,3 @@ def messages(request):
         return render(request, 'app/messages.html')
     else:
         return HttpResponseRedirect('/')
-
-# Other views (request handlers)
-def deleteRequest(request):
-    pass

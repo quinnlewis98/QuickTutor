@@ -58,10 +58,16 @@ def myRequest(request):
                 user.has_active_request = True
                 user.save()
                 print("request processed")
-                return HttpResponseRedirect('/feed')
+                return HttpResponseRedirect('/myRequest')
             # If it's a 'delete request' request...
             elif request.POST.get('action') == 'Delete':
-                return HttpResponseRedirect('/profile')
+                user = get_user(request)
+                email = user.email
+                instance = Request.objects.filter(user=email)
+                instance.delete()
+                user.has_active_request = False
+                user.save()
+                return HttpResponseRedirect('/myRequest')
 
         # Otherwise, a GET request. just loading the page
         else:

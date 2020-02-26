@@ -6,7 +6,7 @@ from .models import *
 from .forms import *
 
 
-
+# Rendering views
 def index(request):
     if request.user.is_authenticated:
         return render(request, 'app/redirect.html')
@@ -36,29 +36,36 @@ def feed(request):
 
 def myRequest(request):
     if request.user.is_authenticated:
-        requests_list = Request.objects.order_by('-pub_date')[:]
-        # process each request in a for loop
-        context = {
-            'requests_list': requests_list,
-        }
-
+        # If getting a post request...
         if request.method == 'POST':
-            title = request.POST['title']
-            location = request.POST['location']
-            description = request.POST['description']
-            new_request = Request()
-            new_request.title = title
-            new_request.location = location
-            new_request.description = description
-            new_request.pub_date = timezone.now()
-            new_request.user = request.user.email
-            new_request.save()
-            user = get_user(request)
-            user.has_active_request = True
-            user.save()
-            print("request processed")
-            return HttpResponseRedirect('/feed')
-        return render(request, 'app/myRequest.html', context)
+            # If it's a 'new request' request...
+            if request.POST.get('action') == 'Submit':
+                title = request.POST['title']
+                location = request.POST['location']
+                description = request.POST['description']
+                new_request = Request()
+                new_request.title = title
+                new_request.location = location
+                new_request.description = description
+                new_request.pub_date = timezone.now()
+                new_request.user = request.user.email
+                new_request.save()
+                user = get_user(request)
+                user.has_active_request = True
+                user.save()
+                print("request processed")
+                return HttpResponseRedirect('/feed')
+            # If it's a 'delete request' request...
+            elif request.POST.get('action') == 'Delete':
+                return HttpResponseRedirect('/profile')
+
+        # Otherwise, a GET request. just loading the page
+        else:
+            requests_list = Request.objects.order_by('-pub_date')[:]
+            context = {
+                'requests_list': requests_list,
+            }
+            return render(request, 'app/myRequest.html', context)
     else:
         return HttpResponseRedirect('/')
 
@@ -82,3 +89,6 @@ def messages(request):
     else:
         return HttpResponseRedirect('/')
 
+# Other views (request handlers)
+def deleteRequest(request):
+    pass

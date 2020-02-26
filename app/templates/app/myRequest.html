@@ -46,16 +46,41 @@
     <div class="container">
         <!-- If the user has an active request, find which one and display the title. -->
         {% if user.has_active_request %}
+            <!-- Make sure requests_list is not empty %} -->
             {% if requests_list %}
+                <!-- Find the request that matches their email address and display it -->
                 {% for request in requests_list %}
                     {% if request.user == user.email %}
-                      <h5>You currently have an active request: </h5>
-                      <h5> &nbsp;&nbsp;&nbsp; {{ request.title }} </h5>
+                      <p class="lead">You currently have an active request: </p>
+                      <div class="container">
+                          <div class="row">
+                              <div class="col">
+                                  <div class="card">
+                                      <div class="card-header">
+                                          <h5 class="card-title" style="display: inline">{{ request.title }}</h5>
+                                          <form action="/myRequest/" method="post" style="display: inline;">
+                                              {% csrf_token %}
+                                              <input type="submit" name="action" value="Edit" class="btn btn-primary" style="display: inline;">
+                                              <input type="submit" name="action" value="Delete" class="btn btn-danger" style="display: inline;">
+                                          </form>
+                                      </div>
+                                      <div class="card-body">
+                                          <p class="card-text">Location: {{ request.location }}</p>
+                                          <p class="card-text">Description: {{ request.description }}</p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
                     {% endif %}
                 {% endfor %}
+            <!-- If their active request field is true, but the request list is empty, something is wrong! -->
+            {% else %}
+                <p class="lead">Error. For some reason there are no active requests, yet your user model thinks that
+                you have an active request. </p>
             {% endif %}
 
-        <!-- Otherwise, show them the request creation form! -->
+        <!-- If they do not have an active request, show them the request creation form! -->
         {% else %}
         <h5>You have no active requests; create one below!</h5>
         <div class="row">
@@ -79,7 +104,7 @@
                                   <input id="description" class="form-control" type="text" name="description" maxlength="300" required>
                                   <small class="form-text text-white">Include an estimated fee.</small>
                               </div>
-                              <input type="submit" value="Submit" class="btn btn-success btn-lg" style="float:right; margin:0px 20px"/>
+                              <input type="submit" name='action' value="Submit" class="btn btn-success btn-lg" style="float:right; margin:0px 20px"/>
                           </form> <br>
             </div>
           </div>

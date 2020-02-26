@@ -12,25 +12,36 @@
     <title>Feed</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a class="navbar-brand" href='http://localhost:8000/'>QuickTutor</a>
-        <div id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href = 'http://localhost:8000/profile/' >My Profile</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href = 'http://localhost:8000/feed/' >Feed</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href = 'http://localhost:8000/myRequest/' >Requests</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href = 'http://localhost:8000/contacts/' >Messages</a>
-            </li>
-          </ul>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href='http://localhost:8000/'>QuickTutor</a>
+    <div id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href = 'http://localhost:8000/feed/' >Feed</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href = 'http://localhost:8000/myRequest/' >Requests</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href = 'http://localhost:8000/contacts/' >Messages</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{user.email}}
+          </a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href='http://localhost:8000/profile/' >My Profile</a>
+          <a class="dropdown-item" href='/#/' >Logout</a>
         </div>
-      </nav>
+      </ul>
+      </div>
+
+  </nav><br>
 
     <h3><br>This page is for tutors; will display a feed of requests for them to view, offer their help, etc. Right now all
     it does is list out the request titles. </h3>

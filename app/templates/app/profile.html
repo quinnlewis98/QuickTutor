@@ -17,9 +17,6 @@
       <div id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href = 'http://localhost:8000/profile/' >My Profile</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href = 'http://localhost:8000/feed/' >Feed</a>
           </li>
           <li class="nav-item">
@@ -30,6 +27,22 @@
           </li>
         </ul>
       </div>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{user.email}}
+            </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href='http://localhost:8000/profile/' >My Profile</a>
+            <form action="/logout_view/" method="post">
+              <a class="dropdown-item" href='/#/' >Logout</a>
+            </form>
+          </div>
+        </ul>
+        </div>
+
     </nav><br>
 
     <h2>Name: {{ user.get_full_name }} </h2><br>

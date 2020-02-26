@@ -17,8 +17,8 @@ install:
   - pip install -r requirements.txt
   
   
-scripts:
-pytest  
+script:
+python manage.py test  
  
  
 

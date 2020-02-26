@@ -6,9 +6,8 @@ from django.db import models
 
 
 class User(models.Model):
-    # needs tutor and tutee specific fields
-    tutor_mode = models.BooleanField()  # true if in tutor_mode
-    # also needs fields to contain everything associated with a profile page
+    # needs fields to contain everything associated with a profile page
+    pass
 
 
 class Request(models.Model):

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.contrib.auth import get_user
+from django.contrib.auth import logout
 from .models import *
 from .forms import *
 
@@ -20,6 +21,9 @@ def redirect(request):
     else:
         return HttpResponseRedirect('/')
 
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')
 
 def feed(request):
     if request.user.is_authenticated:

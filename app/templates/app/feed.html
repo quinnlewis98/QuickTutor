@@ -46,26 +46,31 @@
 
   </nav><br>
 
-  <h3><br>This page is for tutors; will display a feed of requests for them to view, offer their help, etc. Right now all
-  it does is list out the request titles. </h3>
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 id="h1" class="display-4">Request Feed</h1>
+      <p class="lead"> Browse current requests, and offer help to students in need!</p>
+    </div>
+</div>
 
   {% if requests_list %}
-    {% for request in requests_list %}
-      <div class="card" style="width: 18rem;">
-        <div class="card-body">
-          <h5 class="card-title">{{ request.title }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{ request.user }}</h6>
-          <p class="card-text">{{ request.description }}</p>
-          <a href="#" class="card-link">Offer Help</a>
+    <div class="container">
+      {% for request in requests_list %}
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title">{{ request.title }}</h5>
+              </div>
+              <div class="card-body">
+                <p class="card-text mode-description">{{ request.description }}</p>
+                <a href="#" class="card-link">Offer Help</a>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    {% endfor %}
-
-        <!-- <ul>
-        
-            <li>{{ request.title }} | from {{ request.user }}</li>
-        
-        </ul> -->
+      {% endfor %}
+    </div>
   {% else %}
       <p>No requests are available.</p>
   {% endif %}

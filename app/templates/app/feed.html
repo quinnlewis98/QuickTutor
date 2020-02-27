@@ -46,18 +46,29 @@
 
   </nav><br>
 
-    <h3><br>This page is for tutors; will display a feed of requests for them to view, offer their help, etc. Right now all
-    it does is list out the request titles. </h3>
+  <h3><br>This page is for tutors; will display a feed of requests for them to view, offer their help, etc. Right now all
+  it does is list out the request titles. </h3>
 
-   {% if requests_list %}
-        <ul>
-        {% for request in requests_list %}
+  {% if requests_list %}
+    {% for request in requests_list %}
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ request.title }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ request.user }}</h6>
+          <p class="card-text">{{ request.description }}</p>
+          <a href="#" class="card-link">Offer Help</a>
+        </div>
+      </div>
+    {% endfor %}
+
+        <!-- <ul>
+        
             <li>{{ request.title }} | from {{ request.user }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No requests are available.</p>
-    {% endif %}
+        
+        </ul> -->
+  {% else %}
+      <p>No requests are available.</p>
+  {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

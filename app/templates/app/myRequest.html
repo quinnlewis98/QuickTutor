@@ -9,10 +9,12 @@
     <link rel="stylesheet" type="text/css" href="../../static/app/style.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
+    <!-- font awesome icon -->
+      <script src="https://kit.fontawesome.com/346d3afbe8.js" crossorigin="anonymous"></script>
     <title>My Request</title>
   </head>
 
+  <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <a class="navbar-brand" href='http://localhost:8000/'>QuickTutor</a>
     <div id="navbarNav">
@@ -21,7 +23,7 @@
           <a class="nav-link" href = 'http://localhost:8000/feed/' >Feed</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href = 'http://localhost:8000/myRequest/' >Requests</a>
+          <a class="nav-link" href = 'http://localhost:8000/myRequest/' >Request</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href = 'http://localhost:8000/contacts/' >Messages</a>
@@ -37,7 +39,7 @@
           </a>
         <div class="dropdown-menu">
           <a class="dropdown-item" href='http://localhost:8000/profile/' >My Profile</a>
-            <form action="/myRequest/" method="post" style="display: inline;">
+            <form action="/myRequest/" method="post" class="inline">
                 {% csrf_token %}
                 <input type=submit name='action' value='Logout' class="dropdown-item">
             </form>
@@ -48,55 +50,47 @@
   </nav><br>
 
   <body>
-    <div class="jumbotron jumbotron-fluid">
-      <div class="container">
-        <h1 class="display-4">Tutee Requests Page</h1>
-        <p class="lead">This is where they will either create a request or display their current active request.</p>
-
-      </div>
-    </div>
-
-    <!-- If they have no active requests... -->
     <div class="container">
-        <!-- If the user has an active request, find which one and display the title. -->
+        <!-- If the user has an active request, display the title. -->
         {% if user.has_active_request %}
-            <!-- Make sure requests_list is not empty %} -->
-            {% if requests_list %}
-                <!-- Find the request that matches their email address and display it -->
-                {% for request in requests_list %}
-                    {% if request.user == user.email %}
-                      <p class="lead">You currently have an active request: </p>
-                      <div class="container">
-                          <div class="row">
-                              <div class="col">
-                                  <div class="card">
-                                      <div class="card-header">
-                                          <h5 class="card-title" style="display: inline">{{ request.title }}</h5>
-                                          <form action="/myRequest/" method="post" style="display: inline;">
-                                              {% csrf_token %}
-                                              <input type="submit" name="action" value="Edit" class="btn btn-primary" style="display: inline;">
-                                              <input type="submit" name="action" value="Delete" class="btn btn-danger" style="display: inline;">
-                                          </form>
-                                      </div>
-                                      <div class="card-body">
-                                          <p class="card-text">Location: {{ request.location }}</p>
-                                          <p class="card-text">Description: {{ request.description }}</p>
-                                      </div>
-                                  </div>
-                              </div>
+          <p class="lead requestHeader">You currently have an active request. </p>
+          <div class="container">
+              <div class="row">
+                      <div class="card w-75 request-card">
+                          <div class="card-header">
+                              <h5 class="card-title inline">{{ request.title }}</h5>
+                              <i class="fas fa-map-marker-alt inline icon"></i>
+                              <p class="inline location">{{ request.location }}</p>
+                              <form action="/myRequest/" method="post" class="inline">
+                                  {% csrf_token %}
+                                  <input type="submit" name="action" value="Delete" class="btn btn-danger request-btn inline">
+                                  <input type="submit" name="action" value="Edit" class="btn btn-primary request-btn inline">
+                              </form>
+                          </div>
+                          <div class="card-body">
+                              <u>Description</u><br>
+                              <p class="card-text"> {{ request.description }}</p>
+                              <p class="card-text">List of tutors who have offered help (make this dynamic!)...</p>
+                              <ul class="card-text">
+                                  <li>
+                                      Tutor 1
+                                      <button class="btn btn-success">Accept</button>
+                                      <button class="btn btn-primary">View Profile</button>
+                                  </li> <br>
+                                  <li>
+                                      Tutor 2
+                                      <button class="btn btn-success">Accept</button>
+                                      <button class="btn btn-primary">View Profile</button>
+                                  </li>
+                              </ul>
                           </div>
                       </div>
-                    {% endif %}
-                {% endfor %}
-            <!-- If their active request field is true, but the request list is empty, something is wrong! -->
-            {% else %}
-                <p class="lead">Error. For some reason there are no active requests, yet your user model thinks that
-                you have an active request. </p>
-            {% endif %}
+              </div>
+          </div>
 
         <!-- If they do not have an active request, show them the request creation form! -->
         {% else %}
-        <h5>You have no active requests; create one below!</h5>
+        <h5 class="lead requestHeader">You have no active requests - create one below!</h5><br>
         <div class="row">
           <div class="col-sm-12">
             <div class="card text-white bg-secondary" style="padding:10px">
@@ -107,15 +101,15 @@
                             {% csrf_token %}
                               <div class="form-group">
                                   <label for="title"><h5>Title</h5></label>
-                                  <input id="title" class="form-control" type="text" name="title" maxlength="100" required autofocus>
+                                  <input id="title" class="form-control" type="text" name="title" maxlength="30" required autofocus>
                               </div>
                               <div class="form-group">
                                       <label for="location"><h5>Location</h5></label>
-                                      <input id="location" class="form-control" type="text" name="location" maxlength="50" required>
+                                      <input id="location" class="form-control" type="text" name="location" maxlength="25" required>
                               </div>
                               <div class="form-group">
                                   <label for="description"><h5>Description</h5></label>
-                                  <input id="description" class="form-control" type="text" name="description" maxlength="300" required>
+                                  <textarea id="description" class="form-control" name="description" maxlength="1000" required> </textarea>
                                   <small class="form-text text-white">Include an estimated fee.</small>
                               </div>
                               <input type="submit" name='action' value="Submit" class="btn btn-success btn-lg" style="float:right; margin:0px 20px"/>

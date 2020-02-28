@@ -72,6 +72,31 @@ def myRequest(request):
                 user.has_active_request = False
                 user.save()
                 return HttpResponseRedirect('/myRequest')
+            # If it's an 'edit request' request...
+            elif request.POST.get('action') == 'Edit':
+                user = get_user(request)
+                request_to_edit = Request.objects.get(user=user.email)
+                title = request_to_edit.title
+                location = request_to_edit.location
+                description = request_to_edit.description
+                context = {
+                    'title': title,
+                    'location': location,
+                    'description': description
+                }
+                return render(request, 'app/requestEditor.html', context)
+            # If they've decided to update the request...
+            if request.POST.get('action') == 'Update':
+                user = get_user(request)
+                request_to_edit = Request.objects.get(user=user.email)
+                request_to_edit.title = request.POST['title']
+                request_to_edit.location = request.POST['location']
+                request_to_edit.description = request.POST['description']
+                request_to_edit.save()
+                context = {
+                    'request': request_to_edit,
+                }
+                return render(request, 'app/myRequest.html', context)
             # If it's a 'logout' request...
             elif request.POST.get('action') == 'Logout':
                 logout(request)
@@ -79,11 +104,18 @@ def myRequest(request):
 
         # Otherwise, a GET request. just loading the page
         else:
-            requests_list = Request.objects.order_by('-pub_date')[:]
-            context = {
-                'requests_list': requests_list,
-            }
-            return render(request, 'app/myRequest.html', context)
+            user = get_user(request)
+            # If the user has a request, get it and pass it to the view for display
+            # be wary of the case where the boolean is true but they don't actually have a request... bug?
+            if user.has_active_request:
+                my_request = Request.objects.get(user=user.email)
+                context = {
+                    'request': my_request
+                }
+                return render(request, 'app/myRequest.html', context)
+            # Otherwise, we don't need to pass anything
+            else:
+                return render(request, 'app/myRequest.html')
     # If not authenticated
     else:
         return HttpResponseRedirect('/')

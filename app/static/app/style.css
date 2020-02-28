@@ -6,3 +6,32 @@
     float: right;
     font-size: 18px;
 }
+
+.requestHeader {
+    font-size: 36px;
+}
+
+.request-btn {
+    float: right;
+    margin-left: 4px;
+    margin-right: 0px;
+}
+
+.inline {
+    display: inline;
+}
+
+.icon {
+    margin-left: 10px;
+    margin-right: 2px;
+}
+
+.request-card {
+    margin: 10px auto;
+    float: none;
+}
+
+.location {
+    color: dimgray;
+    font-style: italic;
+}

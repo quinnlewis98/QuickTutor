@@ -45,7 +45,7 @@ class User(AbstractUser):
     objects = UserManager()
 
 class Tutor(models.Model):
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, primary_key=True)
 
 
 class Request(models.Model):

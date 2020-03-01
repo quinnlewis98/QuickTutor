@@ -44,6 +44,9 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+class Tutor(models.Model):
+    email = models.EmailField(unique=True)
+
 
 class Request(models.Model):
     # need a field that maps the request to the user that wrote it (one-to-one relationship)

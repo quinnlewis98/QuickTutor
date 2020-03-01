@@ -52,7 +52,7 @@
   <body>
     <div class="container">
         <!-- If the user has an active request, display the title. -->
-        {% if user.has_active_request %}
+        {% if request is not None %}
           <p class="lead requestHeader">You currently have an active request. </p>
           <div class="container">
               <div class="row">
@@ -70,18 +70,16 @@
                           <div class="card-body">
                               <u>Description</u><br>
                               <p class="card-text"> {{ request.description }}</p>
-                              <p class="card-text">List of tutors who have offered help (make this dynamic!)...</p>
+                              <p class="card-text">List of tutors who have offered help: </p>
                               <ul class="card-text">
-                                  <li>
-                                      Tutor 1
+
+                                {% for tutor in request.tutors.all %}
+                                      <li>{{tutor.email}}
                                       <button class="btn btn-success">Accept</button>
                                       <button class="btn btn-primary">View Profile</button>
-                                  </li> <br>
-                                  <li>
-                                      Tutor 2
-                                      <button class="btn btn-success">Accept</button>
-                                      <button class="btn btn-primary">View Profile</button>
-                                  </li>
+                                      </li><br>
+                                {% endfor %}
+
                               </ul>
                           </div>
                       </div>

@@ -44,6 +44,9 @@ class User(AbstractUser):
     
     objects = UserManager()
 
+class Tutor(models.Model):
+    email = models.EmailField(unique=True, primary_key=True)
+
 
 class Request(models.Model):
     # need a field that maps the request to the user that wrote it (one-to-one relationship)
@@ -51,7 +54,8 @@ class Request(models.Model):
     location = models.CharField(max_length=200)  # the location of the tutee (as specified by the tutee)
     pub_date = models.DateTimeField('date published',max_length=100)  # when it was published
     description = models.CharField(max_length=1000)  # a description written by the tutee
-    user = models.CharField(max_length=200) # email goes here - the unique ID
+    user = models.CharField(max_length=100) # email goes here - the unique ID
+    tutors = models.ManyToManyField(Tutor) # tutors that have offered help will be added onto this
     #user = models.ForeignKey('User', on_delete=models.CASCADE)
     # need a field to track the list of tutors that have offered their help
     def __str__(self):

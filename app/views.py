@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils import timezone
 from django.contrib.auth import get_user
 from django.contrib.auth import logout
@@ -105,10 +106,15 @@ def myRequest(request):
         # Otherwise, a GET request. just loading the page
         else:
             user = get_user(request)
+            #print(user)
             # If the user has a request, get it and pass it to the view for display
             # be wary of the case where the boolean is true but they don't actually have a request... bug?
             if user.has_active_request:
-                my_request = Request.objects.get(user=user.email)
+                try:
+                    my_request = Request.objects.get(user=user.email)
+                 #   print(my_request)
+                except:
+                    my_request = None
                 context = {
                     'request': my_request
                 }
@@ -153,5 +159,25 @@ def contacts(request):
 def messages(request):
     if request.user.is_authenticated:
         return render(request, 'app/messages.html')
+    else:
+        return HttpResponseRedirect('/')
+
+def offerHelp(request, requestor):
+    if request.user.is_authenticated:
+        # handle post request
+        if request.method == 'POST':
+             if request.POST.get('action') == 'Offer Help':
+                temp_tutor = get_user(request)
+                request_to_edit = Request.objects.get(user=requestor)
+                temp_tutor = Tutor(email=get_user(request))
+                temp_tutor.save()
+                request_to_edit.tutors.add(temp_tutor)
+                request_to_edit.save()
+
+                # if (request_to_edit.tutors is not None):
+                #     if (request_to_edit.tutors.find(temp_tutor.email) == -1):
+                #         request_to_edit.tutors = request_to_edit.tutors + ' ' + temp_tutor.email
+                # request_to_edit.save()
+                return HttpResponse('<h1> You have offered help to {}</h1>'.format(requestor))
     else:
         return HttpResponseRedirect('/')

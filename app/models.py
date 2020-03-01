@@ -41,6 +41,7 @@ class User(AbstractUser):
     has_active_request = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+    max_length=200
 
     objects = UserManager()
 

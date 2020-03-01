@@ -63,8 +63,13 @@
                 <h5 class="card-title">{{ request.title }}</h5>
               </div>
               <div class="card-body">
-                <p class="card-text mode-description">{{ request.description }}</p>
-                <a href="#" class="card-link">Offer Help</a>
+                <p class="card-text mode-description">{{ request.description }} <br> {{request.user}}</p>
+               
+                <form action="/offerHelp/{{request.user}}/" method="post" class="inline">
+                  {% csrf_token %}
+              
+                  <input type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
+              </form>
               </div>
             </div>
           </div>

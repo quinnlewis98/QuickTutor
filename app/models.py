@@ -41,7 +41,7 @@ class User(AbstractUser):
     has_active_request = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-
+    
     objects = UserManager()
 
 class Tutor(models.Model):
@@ -50,9 +50,9 @@ class Tutor(models.Model):
 
 class Request(models.Model):
     # need a field that maps the request to the user that wrote it (one-to-one relationship)
-    title = models.CharField(max_length=30)  # the title of the request
-    location = models.CharField(max_length=25)  # the location of the tutee (as specified by the tutee)
-    pub_date = models.DateTimeField('date published')  # when it was published
+    title = models.CharField(max_length=200)  # the title of the request
+    location = models.CharField(max_length=200)  # the location of the tutee (as specified by the tutee)
+    pub_date = models.DateTimeField('date published',max_length=100)  # when it was published
     description = models.CharField(max_length=1000)  # a description written by the tutee
     user = models.CharField(max_length=100) # email goes here - the unique ID
     tutors = models.ManyToManyField(Tutor) # tutors that have offered help will be added onto this

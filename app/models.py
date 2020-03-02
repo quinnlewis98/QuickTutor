@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.conf import settings
 
 class UserManager(BaseUserManager):
     # Need a new model manager since we removed the username field
@@ -52,7 +53,7 @@ class Request(models.Model):
     pub_date = models.DateTimeField('date published',max_length=100)  # when it was published
     description = models.CharField(max_length=1000)  # a description written by the tutee
     user = models.CharField(max_length=100) # email goes here - the unique ID
-    tutors = models.ManyToManyField(User) # tutors that have offered help will be added onto this
+    tutors = models.ManyToManyField(settings.AUTH_USER_MODEL) # tutors that have offered help will be added onto this
     def __str__(self):
         return self.title
 

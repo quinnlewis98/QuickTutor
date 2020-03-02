@@ -66,7 +66,7 @@
                 <p class="card-text mode-description">{{ request.description }} <br> {{request.user}}</p>
                 <form action="/feed/" method="post" class="inline">
                   {% csrf_token %}
-                  <input type="hidden" name="requestor" id="requestor" value="{{ request.user }}">
+                  <input type="hidden" name="tutee" id="tutee" value="{{ request.user }}">
                   <input type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
                 </form>
               </div>

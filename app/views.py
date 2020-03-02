@@ -29,12 +29,10 @@ def feed(request):
         if request.method == 'POST':
             # If it's an 'offer help' request...
             if request.POST.get('action') == 'Offer Help':
-                temp_tutor = get_user(request)
-                requestor = request.POST.get('requestor')
-                request_to_edit = Request.objects.get(user=requestor)
-                temp_tutor = Tutor(email=get_user(request))
-                temp_tutor.save()
-                request_to_edit.tutors.add(temp_tutor)
+                tutor = get_user(request)
+                tutee = request.POST.get('tutee')
+                request_to_edit = Request.objects.get(user=tutee)
+                request_to_edit.tutors.add(tutor)
                 request_to_edit.save()
                 return HttpResponseRedirect('/feed')
             # If it's a 'logout' request...

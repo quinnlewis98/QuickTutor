@@ -25,7 +25,7 @@ SECRET_KEY = 's_o3grnkbw%-1ithd92sei7oo7lrko*p(_ro^z$0#yza4z4u+3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['quicktutor-mamba.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -125,7 +125,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

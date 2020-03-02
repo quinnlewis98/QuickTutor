@@ -110,6 +110,7 @@ def myRequest(request):
             # If the user has a request, get it and pass it to the view for display
             # be wary of the case where the boolean is true but they don't actually have a request... bug?
             if user.has_active_request:
+                my_request = None
                 try:
                     my_request = Request.objects.get(user=user.email)
                  #   print(my_request)

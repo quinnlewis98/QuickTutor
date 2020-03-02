@@ -64,12 +64,10 @@
               </div>
               <div class="card-body">
                 <p class="card-text mode-description">{{ request.description }} <br> {{request.user}}</p>
-               
                 <form action="/offerHelp/{{request.user}}/" method="post" class="inline">
                   {% csrf_token %}
-              
                   <input type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
-              </form>
+                </form>
               </div>
             </div>
           </div>

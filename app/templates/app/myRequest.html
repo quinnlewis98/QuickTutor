@@ -52,7 +52,7 @@
   <body>
     <div class="container">
         <!-- If the user has an active request, display the title. -->
-        {% if request is not None %}
+        {% if request is not None and user.has_active_request == True%}
           <p class="lead requestHeader">You currently have an active request. </p>
           <div class="container">
               <div class="row">

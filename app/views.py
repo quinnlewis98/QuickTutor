@@ -27,6 +27,16 @@ def feed(request):
     if request.user.is_authenticated:
         # handle post request
         if request.method == 'POST':
+            # If it's an 'offer help' request...
+            if request.POST.get('action') == 'Offer Help':
+                temp_tutor = get_user(request)
+                requestor = request.POST.get('requestor')
+                request_to_edit = Request.objects.get(user=requestor)
+                temp_tutor = Tutor(email=get_user(request))
+                temp_tutor.save()
+                request_to_edit.tutors.add(temp_tutor)
+                request_to_edit.save()
+                return HttpResponseRedirect('/feed')
             # If it's a 'logout' request...
             if request.POST.get('action') == 'Logout':
                 logout(request)
@@ -87,7 +97,7 @@ def myRequest(request):
                 }
                 return render(request, 'app/requestEditor.html', context)
             # If they've decided to update the request...
-            if request.POST.get('action') == 'Update':
+            elif request.POST.get('action') == 'Update':
                 user = get_user(request)
                 request_to_edit = Request.objects.get(user=user.email)
                 request_to_edit.title = request.POST['title']
@@ -157,28 +167,9 @@ def contacts(request):
     else:
         return HttpResponseRedirect('/')
 
+
 def messages(request):
     if request.user.is_authenticated:
         return render(request, 'app/messages.html')
-    else:
-        return HttpResponseRedirect('/')
-
-def offerHelp(request, requestor):
-    if request.user.is_authenticated:
-        # handle post request
-        if request.method == 'POST':
-             if request.POST.get('action') == 'Offer Help':
-                temp_tutor = get_user(request)
-                request_to_edit = Request.objects.get(user=requestor)
-                temp_tutor = Tutor(email=get_user(request))
-                temp_tutor.save()
-                request_to_edit.tutors.add(temp_tutor)
-                request_to_edit.save()
-
-                # if (request_to_edit.tutors is not None):
-                #     if (request_to_edit.tutors.find(temp_tutor.email) == -1):
-                #         request_to_edit.tutors = request_to_edit.tutors + ' ' + temp_tutor.email
-                # request_to_edit.save()
-                return HttpResponse('<h1> You have offered help to {}</h1>'.format(requestor))
     else:
         return HttpResponseRedirect('/')

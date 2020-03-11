@@ -35,6 +35,13 @@ def feed(request):
                 request_to_edit.tutors.add(tutor)
                 request_to_edit.save()
                 return HttpResponseRedirect('/feed')
+            if request.POST.get('action') == 'View Profile':
+                tutee = request.POST.get('tutee')
+                tutee_user = User.objects.get(email=tutee)
+                context = {
+                    'tutorORtutee': tutee_user,
+                }
+                return render(request, 'app/profile.html', context)
             # If it's a 'logout' request...
             if request.POST.get('action') == 'Logout':
                 logout(request)
@@ -106,6 +113,13 @@ def myRequest(request):
                     'request': request_to_edit,
                 }
                 return render(request, 'app/myRequest.html', context)
+            elif request.POST.get('action') == 'View Profile':
+                tutor = request.POST.get('tutor')
+                tutor_user = User.objects.get(email=tutor)
+                context = {
+                    'tutorORtutee': tutor_user,
+                }
+                return render(request, 'app/profile.html', context)
             # If it's a 'logout' request...
             elif request.POST.get('action') == 'Logout':
                 logout(request)

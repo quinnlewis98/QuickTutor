@@ -75,8 +75,12 @@
 
                                 {% for tutor in request.tutors.all %}
                                       <li>{{tutor.email}}
-                                      <button class="btn btn-success">Accept</button>
-                                      <button class="btn btn-primary">View Profile</button>
+                                      <form action="/myRequest/" method="post" class="inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="tutor" id="tutor" value="{{ tutor.email }}">
+                                        <input type="submit" name="action" value="Accept" class="btn btn-success request-btn inline">
+                                        <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
+                                      </form>
                                       </li><br>
                                 {% endfor %}
 

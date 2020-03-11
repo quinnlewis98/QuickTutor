@@ -12,7 +12,7 @@
   </head>
   <body>
 
-    <<!-- NAVBAR -->
+    <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <a class="navbar-brand" href='/'>QuickTutor</a>
     <div id="navbarNav">
@@ -47,19 +47,27 @@
 
   </nav><br>
 
+  <!-- The tutor and tutee profile pages when a user clickes on 'View Profile' (from the Feed or
+    Request pages) will most likely look different from the 'My Profile' view, hence the separation
+    and current repetition of code -->
+  {% if tutorORtutee %}
+    <h2>Name: {{ tutorORtutee.get_full_name }} </h2><br>
+    <h2>Email: {{tutorORtutee.email}}</h2>
+    <p>Username: {{ tutorORtutee.username }} </p>
+    <p>Groups: {{ tutorORtutee.groups }} </p>
+    <p>User Permissions: {{ tutorORtutee.user_permissions }} </p>
+    <p>Active: {{ tutorORtutee.is_active }} </p>
+    <p>Last login: {{ tutorORtutee.last_login }} </p>
+  {% else %}
     <h2>Name: {{ user.get_full_name }} </h2><br>
     <h2>Email: {{user.email}}</h2>
     <p>Username: {{ user.username }} </p>
     <p>Groups: {{ user.groups }} </p>
     <p>User Permissions: {{ user.user_permissions }} </p>
-        <p>Active: {{ user.is_active }} </p>
-            <p>Last login: {{ user.last_login}} </p>
-
-
-
-
-
-
+    <p>Active: {{ user.is_active }} </p>
+    <p>Last login: {{ user.last_login }} </p>
+  {% endif %}
+    
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

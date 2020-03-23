@@ -7,7 +7,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Our CSS -->
+    <link rel="stylesheet" type="text/css" href="../../static/app/style.css">
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- font awesome icon -->
+      <script src="https://kit.fontawesome.com/346d3afbe8.js" crossorigin="anonymous"></script>
 
     <title>Feed</title>
 </head>
@@ -46,31 +51,56 @@
       </div>
 
   </nav><br>
+  <!-- End Navbar -->
 
+  <!-- Jumbotron -->
   <div class="jumbotron jumbotron-fluid">
     <div class="container">
       <h1 id="h1" class="display-4">Request Feed</h1>
       <p class="lead"> Browse current requests, and offer help to students in need!</p>
     </div>
-</div>
+  </div>
+  <!-- End jumbotron -->
 
+  <!-- Begin feed -->
   {% if requests_list %}
     <div class="container">
       {% for request in requests_list %}
-        <div class="row">
+        <div class="row" style="padding-bottom: 30px;">
           <div class="col-sm-6">
             <div class="card">
               <div class="card-header">
-                <h5 class="card-title">{{ request.title }}</h5>
+                <h5 class="card-title inline">{{ request.title }}</h5>
+                <i class="fas fa-map-marker-alt inline icon"></i>
+                <p class="inline location">{{ request.location }}</p>
+                <!-- If the user's own request is found, add '(your request)' to the header -->
+                {% if request.user == user.email %}
+                  <em class="request-btn">(your request)</em>
+                <!-- Otherwise, display name and email of tutee -->
+                {% else %}
+                  <em class="request-btn">{{request.user}}</em>
+                {% endif %}
               </div>
               <div class="card-body">
-                <p class="card-text mode-description">{{ request.description }} <br> {{request.user}}</p>
-                <form action="/feed/" method="post" class="inline">
-                  {% csrf_token %}
-                  <input type="hidden" name="tutee" id="tutee" value="{{ request.user }}">
-                  <input type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
-                  <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
-                </form>
+                <p class="card-text mode-description">{{ request.description }}</p>
+                <!-- If it's not the user's own request, display the form to offer help, etc. -->
+                {% if request.user != user.email %}
+                  <form action="/feed/" method="post" class="inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="tutee" id="tutee" value="{{ request.user }}">
+                    <!-- If you haven't offered help, display 'offer help' button -->
+                    {% if user not in request.tutors.all %}
+                      <input onclick="window.alert('Offer sent.')" type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
+                    <!-- If you've already offered your help, this button should be a revoke offer button -->
+                    {% else %}
+                      <input onclick="window.alert('Offer revoked.')" type="submit" name="action" value="Revoke Offer" class="btn btn-danger request-btn inline">
+                    {% endif %}
+                    <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
+                  </form>
+                <!-- If it's the user's own request, provide link to their request page -->
+                {% else %}
+                <a href="/myRequest/">View my request.</a>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -80,6 +110,7 @@
   {% else %}
       <p>No requests are available.</p>
   {% endif %}
+  <!-- End feed -->
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

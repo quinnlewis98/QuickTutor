@@ -35,7 +35,16 @@ def feed(request):
                 request_to_edit.tutors.add(tutor)
                 request_to_edit.save()
                 return HttpResponseRedirect('/feed')
-            if request.POST.get('action') == 'View Profile':
+            # If it's a 'revoke offer' request...
+            elif request.POST.get('action') == 'Revoke Offer':
+                tutor = get_user(request)
+                tutee = request.POST.get('tutee')
+                request_to_edit = Request.objects.get(user=tutee)
+                request_to_edit.tutors.remove(tutor)
+                request_to_edit.save()
+                return HttpResponseRedirect('/feed')
+            # If it's a 'view profile' request
+            elif request.POST.get('action') == 'View Profile':
                 tutee = request.POST.get('tutee')
                 tutee_user = User.objects.get(email=tutee)
                 context = {
@@ -43,7 +52,7 @@ def feed(request):
                 }
                 return render(request, 'app/profile.html', context)
             # If it's a 'logout' request...
-            if request.POST.get('action') == 'Logout':
+            elif request.POST.get('action') == 'Logout':
                 logout(request)
                 return HttpResponseRedirect('/')
         # handle get request
@@ -101,7 +110,7 @@ def myRequest(request):
                     'description': description
                 }
                 return render(request, 'app/requestEditor.html', context)
-            # If they've decided to update the request...
+            # If they've decided to update the request... (saving the edited changes)
             elif request.POST.get('action') == 'Update':
                 user = get_user(request)
                 request_to_edit = Request.objects.get(user=user.email)
@@ -113,6 +122,7 @@ def myRequest(request):
                     'request': request_to_edit,
                 }
                 return render(request, 'app/myRequest.html', context)
+            # If they're trying to view a tutor's profile...
             elif request.POST.get('action') == 'View Profile':
                 tutor = request.POST.get('tutor')
                 tutor_user = User.objects.get(email=tutor)
@@ -120,6 +130,17 @@ def myRequest(request):
                     'tutorORtutee': tutor_user,
                 }
                 return render(request, 'app/profile.html', context)
+            # If they're trying to accept a request...
+            elif request.POST.get('action') == 'Accept and Delete':
+                # Delete the request, and set boolean
+                user = get_user(request)
+                request_to_edit = Request.objects.get(user=user.email)
+                request_to_edit.delete()
+                user.has_active_request = False
+                user.save()
+
+                # It should automatically add the tutor as a contact and direct you to a message with them!
+                return HttpResponseRedirect('/contacts/')
             # If it's a 'logout' request...
             elif request.POST.get('action') == 'Logout':
                 logout(request)
@@ -142,7 +163,7 @@ def myRequest(request):
                     'request': my_request
                 }
                 return render(request, 'app/myRequest.html', context)
-            # Otherwise, we don't need to pass anything
+            # Otherwise, we don't need to pass anything (no request available -- shows request creation form)
             else:
                 return render(request, 'app/myRequest.html')
     # If not authenticated

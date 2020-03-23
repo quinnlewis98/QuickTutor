@@ -35,6 +35,7 @@ def feed(request):
                 request_to_edit.tutors.add(tutor)
                 request_to_edit.save()
                 return HttpResponseRedirect('/feed')
+            # If it's a 'view profile' request
             if request.POST.get('action') == 'View Profile':
                 tutee = request.POST.get('tutee')
                 tutee_user = User.objects.get(email=tutee)
@@ -101,7 +102,7 @@ def myRequest(request):
                     'description': description
                 }
                 return render(request, 'app/requestEditor.html', context)
-            # If they've decided to update the request...
+            # If they've decided to update the request... (saving the edited changes)
             elif request.POST.get('action') == 'Update':
                 user = get_user(request)
                 request_to_edit = Request.objects.get(user=user.email)
@@ -113,6 +114,7 @@ def myRequest(request):
                     'request': request_to_edit,
                 }
                 return render(request, 'app/myRequest.html', context)
+            # If they're trying to view a tutor's profile...
             elif request.POST.get('action') == 'View Profile':
                 tutor = request.POST.get('tutor')
                 tutor_user = User.objects.get(email=tutor)
@@ -142,7 +144,7 @@ def myRequest(request):
                     'request': my_request
                 }
                 return render(request, 'app/myRequest.html', context)
-            # Otherwise, we don't need to pass anything
+            # Otherwise, we don't need to pass anything (no request available -- shows request creation form)
             else:
                 return render(request, 'app/myRequest.html')
     # If not authenticated

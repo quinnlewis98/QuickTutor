@@ -46,31 +46,41 @@
       </div>
 
   </nav><br>
+  <!-- End Navbar -->
 
+  <!-- Jumbotron -->
   <div class="jumbotron jumbotron-fluid">
     <div class="container">
       <h1 id="h1" class="display-4">Request Feed</h1>
       <p class="lead"> Browse current requests, and offer help to students in need!</p>
     </div>
-</div>
+  </div>
+  <!-- End jumbotron -->
 
+  <!-- Begin feed -->
   {% if requests_list %}
     <div class="container">
       {% for request in requests_list %}
         <div class="row">
           <div class="col-sm-6">
             <div class="card">
-              <div class="card-header">
-                <h5 class="card-title">{{ request.title }}</h5>
+              <div class="card-header"> <!-- If the user's own request is found, add '(my request)' to the header -->
+                <h5 class="card-title">{{ request.title }} {% if request.user == user.email %} (my request) {% endif %}</h5>
               </div>
               <div class="card-body">
                 <p class="card-text mode-description">{{ request.description }} <br> {{request.user}}</p>
-                <form action="/feed/" method="post" class="inline">
-                  {% csrf_token %}
-                  <input type="hidden" name="tutee" id="tutee" value="{{ request.user }}">
-                  <input type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
-                  <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
-                </form>
+                <!-- If it's not the user's own request, display the form to offer help, etc. -->
+                {% if request.user != user.email %}
+                  <form action="/feed/" method="post" class="inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="tutee" id="tutee" value="{{ request.user }}">
+                    <input type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
+                    <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
+                  </form>
+                <!-- If it's the user's own request, provide link to their request page -->
+                {% else %}
+                <a href="/myRequest/">View my request.</a>
+                {% endif %}
               </div>
             </div>
           </div>

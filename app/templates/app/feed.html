@@ -61,14 +61,21 @@
   {% if requests_list %}
     <div class="container">
       {% for request in requests_list %}
-        <div class="row">
+        <div class="row" style="padding-bottom: 30px;">
           <div class="col-sm-6">
             <div class="card">
-              <div class="card-header"> <!-- If the user's own request is found, add '(my request)' to the header -->
-                <h5 class="card-title">{{ request.title }} {% if request.user == user.email %} (my request) {% endif %}</h5>
+              <div class="card-header">
+                <h5>{{ request.title }}</h5>
+                <!-- If the user's own request is found, add '(my request)' to the header -->
+                {% if request.user == user.email %}
+                  <em>(my request)</em>
+                <!-- Otherwise, display name and email of tutee -->
+                {% else %}
+                  <em>Submitted by {{request.user}}</em>
+                {% endif %}
               </div>
               <div class="card-body">
-                <p class="card-text mode-description">{{ request.description }} <br> {{request.user}}</p>
+                <p class="card-text mode-description">{{ request.description }}</p>
                 <!-- If it's not the user's own request, display the form to offer help, etc. -->
                 {% if request.user != user.email %}
                   <form action="/feed/" method="post" class="inline">
@@ -76,7 +83,7 @@
                     <input type="hidden" name="tutee" id="tutee" value="{{ request.user }}">
                     <!-- If you haven't offered help, display 'offer help' button -->
                     {% if user not in request.tutors.all %}
-                      <input type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
+                      <input onclick="window.alert('Offer sent.')" type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
                     <!-- If you've already offered your help, this button should be a revoke offer button -->
                     {% else %}
                       <input type="submit" name="action" value="Revoke Offer" class="btn btn-danger request-btn inline">

@@ -7,7 +7,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Our CSS -->
+    <link rel="stylesheet" type="text/css" href="../../static/app/style.css">
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- font awesome icon -->
+      <script src="https://kit.fontawesome.com/346d3afbe8.js" crossorigin="anonymous"></script>
 
     <title>Feed</title>
 </head>
@@ -65,13 +70,15 @@
           <div class="col-sm-6">
             <div class="card">
               <div class="card-header">
-                <h5>{{ request.title }}</h5>
-                <!-- If the user's own request is found, add '(my request)' to the header -->
+                <h5 class="card-title inline">{{ request.title }}</h5>
+                <i class="fas fa-map-marker-alt inline icon"></i>
+                <p class="inline location">{{ request.location }}</p>
+                <!-- If the user's own request is found, add '(your request)' to the header -->
                 {% if request.user == user.email %}
-                  <em>(my request)</em>
+                  <em class="request-btn">(your request)</em>
                 <!-- Otherwise, display name and email of tutee -->
                 {% else %}
-                  <em>Submitted by {{request.user}}</em>
+                  <em class="request-btn">{{request.user}}</em>
                 {% endif %}
               </div>
               <div class="card-body">
@@ -86,7 +93,7 @@
                       <input onclick="window.alert('Offer sent.')" type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
                     <!-- If you've already offered your help, this button should be a revoke offer button -->
                     {% else %}
-                      <input type="submit" name="action" value="Revoke Offer" class="btn btn-danger request-btn inline">
+                      <input onclick="window.alert('Offer revoked.')" type="submit" name="action" value="Revoke Offer" class="btn btn-danger request-btn inline">
                     {% endif %}
                     <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
                   </form>

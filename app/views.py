@@ -130,6 +130,17 @@ def myRequest(request):
                     'tutorORtutee': tutor_user,
                 }
                 return render(request, 'app/profile.html', context)
+            # If they're trying to accept a request...
+            elif request.POST.get('action') == 'Accept and Delete':
+                # Delete the request, and set boolean
+                user = get_user(request)
+                request_to_edit = Request.objects.get(user=user.email)
+                request_to_edit.delete()
+                user.has_active_request = False
+                user.save()
+
+                # It should automatically add the tutor as a contact and direct you to a message with them!
+                return HttpResponseRedirect('/contacts/')
             # If it's a 'logout' request...
             elif request.POST.get('action') == 'Logout':
                 logout(request)

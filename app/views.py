@@ -35,8 +35,16 @@ def feed(request):
                 request_to_edit.tutors.add(tutor)
                 request_to_edit.save()
                 return HttpResponseRedirect('/feed')
+            # If it's a 'revoke offer' request...
+            elif request.POST.get('action') == 'Revoke Offer':
+                tutor = get_user(request)
+                tutee = request.POST.get('tutee')
+                request_to_edit = Request.objects.get(user=tutee)
+                request_to_edit.tutors.remove(tutor)
+                request_to_edit.save()
+                return HttpResponseRedirect('/feed')
             # If it's a 'view profile' request
-            if request.POST.get('action') == 'View Profile':
+            elif request.POST.get('action') == 'View Profile':
                 tutee = request.POST.get('tutee')
                 tutee_user = User.objects.get(email=tutee)
                 context = {
@@ -44,7 +52,7 @@ def feed(request):
                 }
                 return render(request, 'app/profile.html', context)
             # If it's a 'logout' request...
-            if request.POST.get('action') == 'Logout':
+            elif request.POST.get('action') == 'Logout':
                 logout(request)
                 return HttpResponseRedirect('/')
         # handle get request

@@ -74,7 +74,13 @@
                   <form action="/feed/" method="post" class="inline">
                     {% csrf_token %}
                     <input type="hidden" name="tutee" id="tutee" value="{{ request.user }}">
-                    <input type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
+                    <!-- If you haven't offered help, display 'offer help' button -->
+                    {% if user not in request.tutors.all %}
+                      <input type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
+                    <!-- If you've already offered your help, this button should be a revoke offer button -->
+                    {% else %}
+                      <input type="submit" name="action" value="Revoke Offer" class="btn btn-danger request-btn inline">
+                    {% endif %}
                     <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
                   </form>
                 <!-- If it's the user's own request, provide link to their request page -->
@@ -90,6 +96,7 @@
   {% else %}
       <p>No requests are available.</p>
   {% endif %}
+  <!-- End feed -->
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

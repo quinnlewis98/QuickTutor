@@ -51,21 +51,46 @@
     Request pages) will most likely look different from the 'My Profile' view, hence the separation
     and current repetition of code -->
   {% if tutorORtutee %}
+    <h1>You are Viewing this profile page</h1>
     <h2>Name: {{ tutorORtutee.get_full_name }} </h2><br>
     <h2>Email: {{tutorORtutee.email}}</h2>
-    <p>Username: {{ tutorORtutee.username }} </p>
+    <!-- <p>Username: {{ tutorORtutee.username }} </p> -->
     <p>Groups: {{ tutorORtutee.groups }} </p>
     <p>User Permissions: {{ tutorORtutee.user_permissions }} </p>
     <p>Active: {{ tutorORtutee.is_active }} </p>
     <p>Last login: {{ tutorORtutee.last_login }} </p>
   {% else %}
-    <h2>Name: {{ user.get_full_name }} </h2><br>
+    <!--You are this user-->
+    <!-- <h2>Name: {{ user.get_full_name }} </h2><br>
     <h2>Email: {{user.email}}</h2>
     <p>Username: {{ user.username }} </p>
     <p>Groups: {{ user.groups }} </p>
     <p>User Permissions: {{ user.user_permissions }} </p>
     <p>Active: {{ user.is_active }} </p>
-    <p>Last login: {{ user.last_login }} </p>
+    <p>Last login: {{ user.last_login }} </p> -->
+    <div class="content-section">
+      <div class="media">
+        <img class="round-circle account-img" src="{{ user.profile.image.url }}">
+        <!-- getting issues with displaying images, will fix at later time-->
+        <div class="media-body">
+          <h2 class="account-heading">{{ user.get_full_name }}</h2>
+          <p class="text-secondary">{{ user.email }}</p>
+          <p>{{ user.username }}</p>
+          <p>{{ user.description }}</p>
+        </div>
+      </div>
+      <!-- FORM HERE -->
+      <form method="POST"> <!--enctype="multipart/form-data"-->
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Profile Info</legend>
+          {{ u_form }}
+        </fieldset>
+        <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Update Profile</button>
+        </div>
+      </form>
+    </div>
   {% endif %}
     
 

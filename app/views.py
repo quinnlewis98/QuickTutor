@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils import timezone
@@ -6,7 +6,7 @@ from django.contrib.auth import get_user
 from django.contrib.auth import logout
 from .models import *
 from .forms import *
-
+from django.contrib import messages
 
 # Rendering views
 def index(request):
@@ -16,11 +16,13 @@ def index(request):
         return render(request, 'app/index.html')
 
 
-def redirect(request):
-    if request.user.is_authenticated:
-        return render(request, 'app/redirect.html')
-    else:
-        return HttpResponseRedirect('/')
+# I got rid of the following because there were erros in updating the profile page
+# when attempting to redirect upon submitting a form
+# def redirect(request):
+#     if request.user.is_authenticated:
+#         return render(request, 'app/redirect.html')
+#     else:
+#         return HttpResponseRedirect('/')
 
 
 def feed(request):
@@ -179,9 +181,20 @@ def profile(request):
             if request.POST.get('action') == 'Logout':
                 logout(request)
                 return HttpResponseRedirect('/')
+            else: 
+                u_form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
+
+                if u_form.is_valid():
+                    u_form.save()
+                    # messages.success(request, f'Your account has been updated!')
+                    return redirect('profile')
         # handle get request
         else:
-            return render(request, 'app/profile.html')
+            u_form = UserUpdateForm(instance=request.user)
+        context = {
+            'u_form': u_form
+            }
+        return render(request, 'app/profile.html', context)
     else:
         return HttpResponseRedirect('/')
 

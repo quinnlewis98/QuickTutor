@@ -150,6 +150,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+SOCIALACCOUNT_ADAPTER = 'app.my_adapter.SocialAccountAdapter'
+
 LOGIN_REDIRECT_URL = '/redirect/'
 
 AUTH_USER_MODEL = 'app.User'

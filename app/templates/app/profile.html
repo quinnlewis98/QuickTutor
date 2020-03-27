@@ -51,7 +51,7 @@
     Request pages) will most likely look different from the 'My Profile' view, hence the separation
     and current repetition of code -->
   {% if tutorORtutee %}
-    <!--You are Viewing this profile page-->
+    <h1>You are Viewing this profile page</h1>
     <h2>Name: {{ tutorORtutee.get_full_name }} </h2><br>
     <h2>Email: {{tutorORtutee.email}}</h2>
     <p>Username: {{ tutorORtutee.username }} </p>
@@ -61,12 +61,19 @@
     <p>Last login: {{ tutorORtutee.last_login }} </p>
   {% else %}
     <!--You are this user-->
+    <!-- <h2>Name: {{ user.get_full_name }} </h2><br>
+    <h2>Email: {{user.email}}</h2>
+    <p>Username: {{ user.username }} </p>
+    <p>Groups: {{ user.groups }} </p>
+    <p>User Permissions: {{ user.user_permissions }} </p>
+    <p>Active: {{ user.is_active }} </p>
+    <p>Last login: {{ user.last_login }} </p> -->
     <div class="content-section">
       <div class="media">
-        <img class="round-circle account-img" src="userimage.jpg">
+        <img class="round-circle account-img" src="{{ user.profile.image.url }}">
         <div class="media-body">
-          <h2 class="account-heading">Username</h2>
-          <p class="text-secondary">username@email.com</p>
+          <h2 class="account-heading">{{ user.get_full_name }}</h2>
+          <p class="text-secondary">{{ user.email }}</p>
         </div>
       </div>
       <!-- FORM HERE -->

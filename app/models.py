@@ -43,7 +43,7 @@ class User(AbstractUser):
     
     # profile picture field
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
-        # iamges uploaded to that directory
+        # images uploaded to that directory
         # need to 'pip install Pillow' to make this work
 
     has_active_request = models.BooleanField(default=False)

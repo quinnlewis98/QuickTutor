@@ -185,6 +185,26 @@ def profile(request):
     else:
         return HttpResponseRedirect('/')
 
+def editProfile(request):
+    if request.user.is_authenticated:
+        # handle post request
+        if request.method == 'POST':
+            # If it's a 'logout' request...
+            if request.POST.get('action') == 'Logout':
+                logout(request)
+                return HttpResponseRedirect('/')
+        # handle get request
+        else:
+            u_form = UserUpdateForm()
+            
+            context = {
+                'u_form': u_form
+            }
+
+            return render(request, 'app/editProfile.html', context)
+    else:
+        return HttpResponseRedirect('/')
+
 
 def contacts(request):
     if request.user.is_authenticated:

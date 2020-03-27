@@ -54,7 +54,7 @@
     <h1>You are Viewing this profile page</h1>
     <h2>Name: {{ tutorORtutee.get_full_name }} </h2><br>
     <h2>Email: {{tutorORtutee.email}}</h2>
-    <p>Username: {{ tutorORtutee.username }} </p>
+    <!-- <p>Username: {{ tutorORtutee.username }} </p> -->
     <p>Groups: {{ tutorORtutee.groups }} </p>
     <p>User Permissions: {{ tutorORtutee.user_permissions }} </p>
     <p>Active: {{ tutorORtutee.is_active }} </p>
@@ -78,6 +78,16 @@
         </div>
       </div>
       <!-- FORM HERE -->
+      <form method="POST"> <!--enctype="multipart/form-data"-->
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Profile Info</legend>
+          {{ u_form }}
+        </fieldset>
+        <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Update Profile</button>
+        </div>
+      </form>
     </div>
   {% endif %}
     

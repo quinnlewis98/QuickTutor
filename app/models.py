@@ -38,7 +38,8 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     # needs fields to contain everything associated with a profile page
     email = models.EmailField(('email address'), unique=True)
-    username = None
+    username = models.CharField(default="None", max_length=15)
+    description = models.CharField(default='New User',max_length=200)
     
     # profile picture field
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')

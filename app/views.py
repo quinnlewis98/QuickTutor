@@ -11,13 +11,12 @@ from django.contrib import messages
 # Rendering views
 def index(request):
     if request.user.is_authenticated:
-        return render(request, 'app/redirect.html')
+        return HttpResponseRedirect('/feed')
     else:
         return render(request, 'app/index.html')
 
 
-# I got rid of the following because there were erros in updating the profile page
-# when attempting to redirect upon submitting a form
+# The old redirect page -- was giving some form submission errors. Deemed unnecessary
 # def redirect(request):
 #     if request.user.is_authenticated:
 #         return render(request, 'app/redirect.html')
@@ -192,6 +191,7 @@ def profile(request):
         else:
             u_form = UserUpdateForm(instance=request.user)
         context = {
+            'user': get_user(request),
             'u_form': u_form
             }
         return render(request, 'app/profile.html', context)

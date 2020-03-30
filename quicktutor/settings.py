@@ -88,7 +88,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -162,7 +161,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 try:
     # configure django app for heroku
-    import django_heroku
-    django_heroku.settings(locals())
+    if '/app' in os.environ['HOME']:
+        import django_heroku
+        django_heroku.settings(locals())
 except ImportError:
     found = False

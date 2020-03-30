@@ -62,9 +62,8 @@ class NavigationTestCases(TestCase):
 			self.assertTrue(response.templates[0].name == 'app/index.html')
 
 	def test_navigation_after_login(self):
+		# Create client and login
 		client = Client()
-
-		# Login
 		client.login(username='mamba@gmail.com', password='CS3240!!')
 
 		# Accessing base URL redirects them to feed page
@@ -81,15 +80,60 @@ class NavigationTestCases(TestCase):
 			self.assertTrue(response.templates[0].name == name)
 
 
-# class RequestTestCases(TestCase):
-# 	# Create a user before tests
-# 	def setUp(self):
-# 		User.objects.create_user('mamba@gmail.com', 'CS3240!!')
-#
-# 	# Create a request and check that it's on the feed
-# 	def test_request_creation(self):
-# 		client = Client()
-# 		# Login
-# 		client.login(username='mamba@gmail.com', password='CS3240!!')
-#
-# 		response = client.get('/myRequest/')
+class RequestTestCases(TestCase):
+	# Create a user before tests and post a request
+	def setUp(self):
+		# Create user
+		User.objects.create_user('mamba@gmail.com', 'CS3240!!')
+
+	# Check that user's boolean is set when they create a request
+	def test_has_active_request(self):
+		# Create client and login
+		client = Client()
+		client.login(username='mamba@gmail.com', password='CS3240!!')
+
+		# Send POST request to myRequest page to create a new request
+		response = client.post('/myRequest/', {'action': 'Submit', 'title': 'Help me!', 'location': 'Clark',
+											   'description': 'I really need help. $5'}, follow=True)
+
+		user = User.objects.get(email='mamba@gmail.com')
+		self.assertTrue(user.has_active_request)
+
+	# Check that user's created request is displayed on myRequest page, with the correct information
+	def test_request_creation(self):
+		# Create client and login
+		client = Client()
+		client.login(username='mamba@gmail.com', password='CS3240!!')
+
+		# Send POST request to myRequest page to create a new request
+		response = client.post('/myRequest/', {'action': 'Submit', 'title': 'Help me!', 'location': 'Clark',
+											   'description': 'I really need help. $5'}, follow=True)
+
+		# Send GET request to myRequest page to view your already made request
+		response = client.get('/myRequest/', follow=True)
+		request = response.context['request']
+
+		# Make sure data matches
+		self.assertTrue(request.title == 'Help me!' and request.location == 'Clark' and request.description == 'I really need help. $5')
+
+	# When user deletes request, their boolean should be set back to false, and the Request.objects list should
+	# no longer contain the request
+	def test_delete_request(self):
+		# Create client and login
+		client = Client()
+		client.login(username='mamba@gmail.com', password='CS3240!!')
+
+		# Send POST request to myRequest page to create a new request
+		client.post('/myRequest/', {'action': 'Submit', 'title': 'Help me!', 'location': 'Clark',
+											   'description': 'I really need help. $5'}, follow=True)
+
+		# Send POST request to myRequest page to delete request
+		response = client.post('/myRequest/', {'action': 'Delete'})
+
+		# Get user
+		user = User.objects.get(email='mamba@gmail.com')
+
+		# See if their request still exists - should return set of length 0
+		request_search = Request.objects.filter(user=user.email)
+
+		self.assertTrue(len(request_search) == 0 and user.has_active_request is False)

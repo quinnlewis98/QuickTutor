@@ -161,8 +161,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 try:
     # configure django app for heroku
-    if '/app' in os.environ['HOME']:
+    if '/app' in os.environ['HOME']: # from https://github.com/heroku/django-heroku/issues/39
         import django_heroku
         django_heroku.settings(locals())
-except ImportError:
+except:
     found = False

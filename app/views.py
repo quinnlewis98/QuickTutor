@@ -72,8 +72,15 @@ def myRequest(request):
     if request.user.is_authenticated:
         # If getting a post request...
         if request.method == 'POST':
+
             # If it's a 'new request' request...
             if request.POST.get('action') == 'Submit':
+                # Make sure they don't have an active request
+                user = get_user(request)
+                if user.has_active_request:
+                    return HttpResponseRedirect('/myRequest')
+
+                # If they don't, go ahead and create the request with their entered data
                 title = request.POST['title']
                 location = request.POST['location']
                 description = request.POST['description']
@@ -84,11 +91,14 @@ def myRequest(request):
                 new_request.pub_date = timezone.now()
                 new_request.user = request.user.email
                 new_request.save()
-                user = get_user(request)
+
+                # Set their boolean flag
                 user.has_active_request = True
                 user.save()
-                #print("request processed")
+
+                # Use redirect to refresh the page
                 return HttpResponseRedirect('/myRequest')
+
             # If it's a 'delete request' request...
             elif request.POST.get('action') == 'Delete':
                 user = get_user(request)
@@ -98,6 +108,7 @@ def myRequest(request):
                 user.has_active_request = False
                 user.save()
                 return HttpResponseRedirect('/myRequest')
+
             # If it's an 'edit request' request...
             elif request.POST.get('action') == 'Edit':
                 user = get_user(request)
@@ -122,7 +133,7 @@ def myRequest(request):
                 context = {
                     'request': request_to_edit,
                 }
-                return render(request, 'app/myRequest.html', context)
+                return HttpResponseRedirect('/myRequest/')
             # If they're trying to view a tutor's profile...
             elif request.POST.get('action') == 'View Profile':
                 tutor = request.POST.get('tutor')
@@ -150,14 +161,10 @@ def myRequest(request):
         # Otherwise, a GET request. just loading the page
         else:
             user = get_user(request)
-            #print(user)
             # If the user has a request, get it and pass it to the view for display
-            # be wary of the case where the boolean is true but they don't actually have a request... bug?
             if user.has_active_request:
-                my_request = None
                 try:
                     my_request = Request.objects.get(user=user.email)
-                 #   print(my_request)
                 except:
                     my_request = None
                 context = {

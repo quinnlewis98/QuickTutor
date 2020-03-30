@@ -87,7 +87,7 @@ def myRequest(request):
                 user = get_user(request)
                 user.has_active_request = True
                 user.save()
-                print("request processed")
+                #print("request processed")
                 return HttpResponseRedirect('/myRequest')
             # If it's a 'delete request' request...
             elif request.POST.get('action') == 'Delete':

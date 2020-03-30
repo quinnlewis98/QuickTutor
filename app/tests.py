@@ -79,3 +79,17 @@ class NavigationTestCases(TestCase):
 			response = client.get(urls[i], follow=True)
 			name = 'app/' + page_names[i] + '.html'
 			self.assertTrue(response.templates[0].name == name)
+
+
+# class RequestTestCases(TestCase):
+# 	# Create a user before tests
+# 	def setUp(self):
+# 		User.objects.create_user('mamba@gmail.com', 'CS3240!!')
+#
+# 	# Create a request and check that it's on the feed
+# 	def test_request_creation(self):
+# 		client = Client()
+# 		# Login
+# 		client.login(username='mamba@gmail.com', password='CS3240!!')
+#
+# 		response = client.get('/myRequest/')

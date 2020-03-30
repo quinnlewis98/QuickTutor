@@ -7,7 +7,7 @@ class UserManager(BaseUserManager):
 
     use_in_migrations = True
 
-    # all-auth creates our users, but createsuperuser will call this
+    # all-auth creates our users
     def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError('The given email must be set')
@@ -17,7 +17,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    # for creating regular users - probably won't need
+    # for creating regular users
     def create_user(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)

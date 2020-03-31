@@ -66,25 +66,30 @@
                                   <input type="submit" name="action" value="Delete" class="btn btn-danger request-btn inline">
                                   <input type="submit" name="action" value="Edit" class="btn btn-primary request-btn inline">
                               </form>
+                              <p class="time">{{ time_since_request }}</p>
                           </div>
                           <div class="card-body">
                               <u>Description</u><br>
                               <p class="card-text"> {{ request.description }}</p>
-                              <p class="card-text">List of tutors who have offered help: </p>
-                              <ul class="card-text">
+                              {% if request.tutors.all %}
+                                  <p class="card-text">Tutors who have offered help: </p>
+                                  <ul class="card-text">
 
-                                {% for tutor in request.tutors.all %}
-                                      <li>{{tutor.email}}
-                                      <form action="/myRequest/" method="post" class="inline">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="tutor" value="{{ tutor.email }}">
-                                        <input type="submit" name="action" value="Accept and Delete" class="btn btn-success request-btn inline">
-                                        <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
-                                      </form>
-                                      </li><br>
-                                {% endfor %}
+                                    {% for tutor in request.tutors.all %}
+                                          <li>{{tutor.email}}
+                                          <form action="/myRequest/" method="post" class="inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="tutor" value="{{ tutor.email }}">
+                                            <input type="submit" name="action" value="Accept and Delete" class="btn btn-success request-btn inline">
+                                            <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
+                                          </form>
+                                          </li><br>
+                                    {% endfor %}
 
-                              </ul>
+                                  </ul>
+                              {% else %}
+                                <p class="card-text">No one has offered help yet -- be patient!</p>
+                              {% endif %}
                           </div>
                       </div>
               </div>

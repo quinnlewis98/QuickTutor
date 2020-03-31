@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 import unittest
 from .models import *
+import datetime
+from django.utils import timezone
 
 '''
 NOTES | from https://docs.djangoproject.com/en/3.0/topics/testing/tools/
@@ -249,3 +251,95 @@ class RequestTestCases(TestCase):
 		self.assertEqual('Help me!', request.title, 'Title does not match.')
 		self.assertEqual('Clark', request.location, 'Location does not match.')
 		self.assertEqual('I really need help. $5', request.description, 'Description does not match.')
+
+	# Make sure printed timestamps are correct
+	def test_timestamp_request(self):
+		# Create client and login
+		client = Client()
+		client.login(username='mamba@gmail.com', password='CS3240!!')
+
+		# Send POST request to myRequest page to create a new request
+		client.post('/myRequest/', {'action': 'Submit', 'title': 'Help me!', 'location': 'Clark',
+									'description': 'I really need help. $5'}, follow=True)
+
+		# Get user
+		user = User.objects.get(email='mamba@gmail.com')
+
+		# Get request
+		request = Request.objects.filter(user=user.email)[0]
+
+		# ***Testing "Just now"
+		# Send GET request to see what timestamp is printed
+		response = client.get('/myRequest/')
+		timestamp = response.context['time_since_request']
+
+		# Should be 'Just now'
+		self.assertEqual(timestamp, 'Just now', 'Timestamp did not say "Just now"')
+
+		# ***Testing "59 minutes ago"
+		# Change pub_date to 59 minutes ago
+		new_pub_date = timezone.now() - datetime.timedelta(minutes=59)
+		request.pub_date = new_pub_date
+		request.save()
+
+		# Send GET request to see what timestamp is printed
+		response = client.get('/myRequest/')
+		timestamp = response.context['time_since_request']
+
+		# Should be '59 minutes ago'
+		self.assertEqual(timestamp, '59 minutes ago', 'Timestamp did not say "59 minutes ago"')
+
+		# ***Testing "1 hour ago"
+		# Change pub_date to one hour ago
+		new_pub_date = timezone.now() - datetime.timedelta(hours=1)
+		request.pub_date = new_pub_date
+		request.save()
+
+		# Send GET request to see what timestamp is printed
+		response = client.get('/myRequest/')
+		timestamp = response.context['time_since_request']
+
+		# Should be '1 hour ago'
+		self.assertEqual(timestamp, '1 hour ago', 'Timestamp did not say "1 hour ago"')
+
+		# ***Testing "23 hours ago"
+		# Change pub_date to 23 hours ago
+		new_pub_date = timezone.now() - datetime.timedelta(hours=23)
+		request.pub_date = new_pub_date
+		request.save()
+
+		# Send GET request to see what timestamp is printed
+		response = client.get('/myRequest/')
+		timestamp = response.context['time_since_request']
+
+		# Should be '23 hours ago'
+		self.assertEqual(timestamp, '23 hours ago', 'Timestamp did not say "23 hours ago"')
+
+		# ***Testing "1 day ago"
+		# Change pub_date to one day ago
+		new_pub_date = timezone.now() - datetime.timedelta(days=1)
+		request.pub_date = new_pub_date
+		request.save()
+
+		# Send GET request to see what timestamp is printed
+		response = client.get('/myRequest/')
+		timestamp = response.context['time_since_request']
+
+		# Should be '1 day ago'
+		self.assertEqual(timestamp, '1 day ago', 'Timestamp did not say "1 day ago"')
+
+		# ***Testing "7 days ago"
+		# Change pub_date to seven days ago
+		new_pub_date = timezone.now() - datetime.timedelta(days=7)
+		request.pub_date = new_pub_date
+		request.save()
+
+		# Send GET request to see what timestamp is printed
+		response = client.get('/myRequest/')
+		timestamp = response.context['time_since_request']
+
+		# Should be '7 days ago'
+		self.assertEqual(timestamp, '7 days ago', 'Timestamp did not say "7 days ago"')
+
+
+	# STILL NEED TO TEST 'VIEW PROFILE' FEATURE FROM MYREQUEST PAGE, AS WELL AS THE ACCEPTING PROCESS

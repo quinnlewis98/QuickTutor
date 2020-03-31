@@ -12,8 +12,10 @@ import datetime
 
 # Rendering views
 def index(request):
+    # If logged in, send them to feed page
     if request.user.is_authenticated:
         return HttpResponseRedirect('/feed')
+    # Else, send to login page
     else:
         return render(request, 'app/index.html')
 
@@ -27,37 +29,60 @@ def index(request):
 
 
 def feed(request):
+    # Check if logged in
     if request.user.is_authenticated:
         # handle post request
         if request.method == 'POST':
             # If it's an 'offer help' request...
             if request.POST.get('action') == 'Offer Help':
+                # Get the tutor who is offering help
                 tutor = get_user(request)
+
+                # Get the tutee who owns the request
                 tutee = request.POST.get('tutee')
+
+                # Add the tutor to the list of tutors attached to that request
                 request_to_edit = Request.objects.get(user=tutee)
                 request_to_edit.tutors.add(tutor)
                 request_to_edit.save()
+
+                # Refresh feed
                 return HttpResponseRedirect('/feed')
+
             # If it's a 'revoke offer' request...
             elif request.POST.get('action') == 'Revoke Offer':
+                # Get the tutor who is revoking their offer
                 tutor = get_user(request)
+
+                # Get the tutee who owns the request
                 tutee = request.POST.get('tutee')
+
+                # Remove the tutor from the list of tutors attached to that request
                 request_to_edit = Request.objects.get(user=tutee)
                 request_to_edit.tutors.remove(tutor)
                 request_to_edit.save()
+
+                # Refresh feed
                 return HttpResponseRedirect('/feed')
+
             # If it's a 'view profile' request
             elif request.POST.get('action') == 'View Profile':
+                # Get the tutee who owns the request (this is the profile we want to display)
                 tutee = request.POST.get('tutee')
+
+                # Get the User instance and pass to context to render their profile page
                 tutee_user = User.objects.get(email=tutee)
                 context = {
                     'tutorORtutee': tutee_user,
                 }
+
                 return render(request, 'app/profile.html', context)
+
             # If it's a 'logout' request...
             elif request.POST.get('action') == 'Logout':
                 logout(request)
                 return HttpResponseRedirect('/')
+
         # handle get request
         else:
             # Get list of requests, ordered by publication date/time
@@ -66,7 +91,7 @@ def feed(request):
             # Compute time since each request was published, and store in list in identical order
             times = []
             for item in requests_list:
-                time_since_post = datetime_conversion(item)
+                time_since_post = calculate_timestamp(item)
                 times.append(time_since_post)
 
             # Pass requests_and_times in context
@@ -74,16 +99,19 @@ def feed(request):
                 'requests_list': requests_list,
                 'times': times,
             }
+
             return render(request, 'app/feed.html', context)
+
+    # Else, not logged in; show log in page
     else:
         return HttpResponseRedirect('/')
-
+# -- END OF FEED VIEW --
 
 def myRequest(request):
+    # Check if logged in
     if request.user.is_authenticated:
         # If getting a post request...
         if request.method == 'POST':
-
             # If it's a 'new request' request...
             if request.POST.get('action') == 'Submit':
                 # Make sure they don't have an active request
@@ -91,7 +119,7 @@ def myRequest(request):
                 if user.has_active_request:
                     return HttpResponseRedirect('/myRequest')
 
-                # If they don't, go ahead and create the request with their entered data
+                # If they don't have an active request, go ahead and create the request with their entered data
                 title = request.POST['title']
                 location = request.POST['location']
                 description = request.POST['description']
@@ -112,18 +140,26 @@ def myRequest(request):
 
             # If it's a 'delete request' request...
             elif request.POST.get('action') == 'Delete':
+                # Find the request using the user's email
                 user = get_user(request)
                 email = user.email
                 instance = Request.objects.filter(user=email)
                 instance.delete()
+
+                # Set their boolean flag
                 user.has_active_request = False
                 user.save()
+
+                # Use redirect to refresh the page
                 return HttpResponseRedirect('/myRequest')
 
             # If it's an 'edit request' request...
             elif request.POST.get('action') == 'Edit':
+                # Find the request using the user's email
                 user = get_user(request)
                 request_to_edit = Request.objects.get(user=user.email)
+
+                # Get the request's data and pass in context to pre-fill the editor with the data
                 title = request_to_edit.title
                 location = request_to_edit.location
                 description = request_to_edit.description
@@ -133,26 +169,35 @@ def myRequest(request):
                     'description': description
                 }
                 return render(request, 'app/requestEditor.html', context)
+
             # If they've decided to update the request... (saving the edited changes)
             elif request.POST.get('action') == 'Update':
+                # Find the request using the user's email
                 user = get_user(request)
                 request_to_edit = Request.objects.get(user=user.email)
+
+                # Update the info and save
                 request_to_edit.title = request.POST['title']
                 request_to_edit.location = request.POST['location']
                 request_to_edit.description = request.POST['description']
                 request_to_edit.save()
-                context = {
-                    'request': request_to_edit,
-                }
+
+                # Redirect to refresh myRequest page and display the updated request
                 return HttpResponseRedirect('/myRequest/')
+
             # If they're trying to view a tutor's profile...
             elif request.POST.get('action') == 'View Profile':
+                # Get the tutor associated with the 'View profile' button they pressed
                 tutor = request.POST.get('tutor')
+
+                # Get the User instance and pass in context to generate profile page
                 tutor_user = User.objects.get(email=tutor)
                 context = {
                     'tutorORtutee': tutor_user,
                 }
+
                 return render(request, 'app/profile.html', context)
+
             # If they're trying to accept a request...
             elif request.POST.get('action') == 'Accept and Delete':
                 # Delete the request, and set boolean
@@ -164,35 +209,41 @@ def myRequest(request):
 
                 # It should automatically add the tutor as a contact and direct you to a message with them!
                 return HttpResponseRedirect('/contacts/')
+
             # If it's a 'logout' request...
             elif request.POST.get('action') == 'Logout':
                 logout(request)
                 return HttpResponseRedirect('/')
 
-        # Otherwise, a GET request. just loading the page
+        # Else, a GET request. just loading the page
         else:
             user = get_user(request)
             # If the user has a request, get it and pass it to the view for display
             if user.has_active_request:
                 my_request = Request.objects.get(user=user.email)
 
-                # Compute time since request was created and pass a string to context
-                time_since_request = datetime_conversion(my_request)
+                # Compute time since request was created and pass as string to context
+                time_since_request = calculate_timestamp(my_request)
 
                 context = {
                     'request': my_request,
                     'time_since_request': time_since_request,
                 }
+
                 return render(request, 'app/myRequest.html', context)
-            # Otherwise, we don't need to pass anything (no request available -- shows request creation form)
+
+            # Else they don't have an active request, no context needed, show request creation form)
             else:
                 return render(request, 'app/myRequest.html')
-    # If not authenticated
+
+    # Else not authenticated
     else:
         return HttpResponseRedirect('/')
+# -- END OF MYREQUEST VIEW --
 
 
 def profile(request):
+    # Check if logged in
     if request.user.is_authenticated:
         # handle post request
         if request.method == 'POST':
@@ -200,6 +251,7 @@ def profile(request):
             if request.POST.get('action') == 'Logout':
                 logout(request)
                 return HttpResponseRedirect('/')
+            # Else updating their profile
             else: 
                 u_form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
 
@@ -242,7 +294,7 @@ def messages(request):
 
 
 # Helper method for calculating how long ago a request was posted. Takes in a Request object as parameter.
-def datetime_conversion(request):
+def calculate_timestamp(request):
     # Get datetime from request object
     pub_date = str(request.pub_date)
 

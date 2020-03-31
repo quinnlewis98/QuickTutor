@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- This is the feed template page. Right now it just iterates through the list of requests
-     passed to it by the feed view in views.py. It simply prints the title of each requests in
-     list format. -->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -83,7 +81,7 @@
                 {% else %}
                   <em class="request-btn">{{request.user}}</em>
                 {% endif %}
-                <p class="time" style="margin-bottom: 0px; padding-bottom: 0px;">{{ time }}</p>
+                <p class="time" style="margin-bottom: 0px; padding-bottom: 0px;" id="timestamp">{{ time }}</p>
               </div>
               <div class="card-body">
                 <p class="card-text mode-description">{{ request.description }}</p>

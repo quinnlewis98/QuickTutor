@@ -388,6 +388,22 @@ class FeedTestCases(TestCase):
 		client.post('/myRequest/', {'action': 'Submit', 'title': 'Science help', 'location': 'Alderman',
 									'description': 'Acids and bases'}, follow=True)
 
+	# Test that if no requests have been posted, the proper message is displayed.
+	def test_no_requests_on_feed(self):
+		# Create client and login
+		client = Client()
+		client.login(username='mamba@gmail.com', password='CS3240!!')
+
+		# Delete all requests
+		Request.objects.all().delete()
+
+		# Send GET request to feed page
+		response = client.get('/feed/')
+
+		# Test that the message appears on the page
+		message = 'No requests are available.'
+		self.assertContains(response, message, count=1)
+
 	# Test that the requests are both listed in the correct order and with the proper timestamps
 	def test_timestamps_feed(self):
 		# Create client and login
@@ -475,3 +491,23 @@ class FeedTestCases(TestCase):
 		# Make sure that second tutor is mamba@yahoo.com
 		self.assertEqual('mamba@yahoo.com', tutors[1].email, "Second tutor was improperly added to request's tutor list.")
 
+	# Test that when a user revokes help on a request, they are removed from that request's tutor list
+	def test_revoke_offer_feed(self):
+		# Create client and login
+		client = Client()
+		client.login(username='mamba@gmail.com', password='CS3240!!')
+
+		# Send POST request to feed page to offer help
+		client.post('/feed/', {'action': 'Offer Help', 'tutee': 'sean@gmail.com'})
+
+		# Test that mamba@gmail.com appears in tutor list
+		request = Request.objects.filter(user='sean@gmail.com')[0]
+		tutor = request.tutors.all()[0].email
+		self.assertEqual(tutor, 'mamba@gmail.com', 'Tutor was not added to tutor list when Offer Help was pressed.')
+
+		# Send POST request to feed page to revoke offer
+		client.post('/feed/', {'action': 'Revoke Offer', 'tutee': 'sean@gmail.com'})
+
+		# Test that mamba@gmail.com no longer appears in tutor list
+		tutors = request.tutors.all()
+		self.assertEqual(0, len(tutors), 'Tutor was not removed from the tutor list.')

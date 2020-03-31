@@ -94,6 +94,10 @@
                       </div>
               </div>
           </div>
+            {% if tutor_not_found %}
+            <script>window.alert("Error - this tutor is no longer available.");</script>
+            {% endif %}
+
 
         <!-- If they do not have an active request, show them the request creation form! -->
         {% else %}

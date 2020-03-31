@@ -67,7 +67,7 @@ def feed(request):
 
             # If it's a 'view profile' request
             elif request.POST.get('action') == 'View Profile':
-                # Get the tutee who owns the request (this is the profile we want to display)
+                # Get the email of the tutee who owns the request (this is the profile we want to display)
                 tutee = request.POST.get('tutee')
 
                 # Get the User instance and pass to context to render their profile page
@@ -210,14 +210,21 @@ def myRequest(request):
                 # Make sure that the tutor hasn't revoked their offer in the time that the tutee was viewing
                 # the page!
                 tutor_found = False
-                for tutor_in_list in request_to_edit.tutors:
+                for tutor_in_list in request_to_edit.tutors.all():
                     if tutor == tutor_in_list.email:
                         tutor_found = True
-
+                # If the tutor has revoked their offer, pass special flag 'tutor_not_found' and an alert should be
+                # displayed.
                 if not tutor_found:
-                    return HttpResponseRedirect('/myRequest/')
+                    time_since_request = calculate_timestamp(request_to_edit)
+                    context = {
+                        'request': request_to_edit,
+                        'time_since_request': time_since_request,
+                        'tutor_not_found': True
+                    }
+                    return render(request, 'app/myRequest.html', context)
 
-                # Delete the request, and set boolean flag
+                # If the tutor's offer still holds, go ahead and delete the request, and set boolean flag
                 request_to_edit.delete()
                 user.has_active_request = False
                 user.save()

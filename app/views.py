@@ -7,6 +7,8 @@ from django.contrib.auth import logout
 from .models import *
 from .forms import *
 from django.contrib import messages
+import datetime
+
 
 # Rendering views
 def index(request):
@@ -58,10 +60,19 @@ def feed(request):
                 return HttpResponseRedirect('/')
         # handle get request
         else:
+            # Get list of requests, ordered by publication date/time
             requests_list = Request.objects.order_by('-pub_date')[:]
-            # process each request in a for loop
+
+            # Compute time since each request was published, and store in list in identical order
+            times = []
+            for item in requests_list:
+                time_since_post = datetime_conversion(item)
+                times.append(time_since_post)
+
+            # Pass requests_and_times in context
             context = {
                 'requests_list': requests_list,
+                'times': times,
             }
             return render(request, 'app/feed.html', context)
     else:
@@ -72,8 +83,15 @@ def myRequest(request):
     if request.user.is_authenticated:
         # If getting a post request...
         if request.method == 'POST':
+
             # If it's a 'new request' request...
             if request.POST.get('action') == 'Submit':
+                # Make sure they don't have an active request
+                user = get_user(request)
+                if user.has_active_request:
+                    return HttpResponseRedirect('/myRequest')
+
+                # If they don't, go ahead and create the request with their entered data
                 title = request.POST['title']
                 location = request.POST['location']
                 description = request.POST['description']
@@ -84,11 +102,14 @@ def myRequest(request):
                 new_request.pub_date = timezone.now()
                 new_request.user = request.user.email
                 new_request.save()
-                user = get_user(request)
+
+                # Set their boolean flag
                 user.has_active_request = True
                 user.save()
-                #print("request processed")
+
+                # Use redirect to refresh the page
                 return HttpResponseRedirect('/myRequest')
+
             # If it's a 'delete request' request...
             elif request.POST.get('action') == 'Delete':
                 user = get_user(request)
@@ -98,6 +119,7 @@ def myRequest(request):
                 user.has_active_request = False
                 user.save()
                 return HttpResponseRedirect('/myRequest')
+
             # If it's an 'edit request' request...
             elif request.POST.get('action') == 'Edit':
                 user = get_user(request)
@@ -122,7 +144,7 @@ def myRequest(request):
                 context = {
                     'request': request_to_edit,
                 }
-                return render(request, 'app/myRequest.html', context)
+                return HttpResponseRedirect('/myRequest/')
             # If they're trying to view a tutor's profile...
             elif request.POST.get('action') == 'View Profile':
                 tutor = request.POST.get('tutor')
@@ -150,18 +172,16 @@ def myRequest(request):
         # Otherwise, a GET request. just loading the page
         else:
             user = get_user(request)
-            #print(user)
             # If the user has a request, get it and pass it to the view for display
-            # be wary of the case where the boolean is true but they don't actually have a request... bug?
             if user.has_active_request:
-                my_request = None
-                try:
-                    my_request = Request.objects.get(user=user.email)
-                 #   print(my_request)
-                except:
-                    my_request = None
+                my_request = Request.objects.get(user=user.email)
+
+                # Compute time since request was created and pass a string to context
+                time_since_request = datetime_conversion(my_request)
+
                 context = {
-                    'request': my_request
+                    'request': my_request,
+                    'time_since_request': time_since_request,
                 }
                 return render(request, 'app/myRequest.html', context)
             # Otherwise, we don't need to pass anything (no request available -- shows request creation form)
@@ -219,3 +239,53 @@ def messages(request):
         return render(request, 'app/messages.html')
     else:
         return HttpResponseRedirect('/')
+
+
+# Helper method for calculating how long ago a request was posted. Takes in a Request object as parameter.
+def datetime_conversion(request):
+    # Get datetime from request object
+    pub_date = str(request.pub_date)
+
+    # Isolate components of pub date
+    year = int(pub_date[0:4])
+    month = int(pub_date[5:7])
+    day = int(pub_date[8:10])
+    hour = int(pub_date[11:13])
+    minute = int(pub_date[14:16])
+    second = int(pub_date[17:19])
+
+    # Create datetime object
+    pub_date = datetime.datetime(year, month, day, hour, minute, second)
+
+    # Isolate components of current time
+    current_time = str(timezone.now())
+    year = int(current_time[0:4])
+    month = int(current_time[5:7])
+    day = int(current_time[8:10])
+    hour = int(current_time[11:13])
+    minute = int(current_time[14:16])
+    second = int(current_time[17:19])
+
+    # Create datetime object
+    current_time = datetime.datetime(year, month, day, hour, minute, second)
+
+    # Compute difference and convert to minutes
+    delta = current_time - pub_date
+    minutes = int(delta.seconds / 60)
+
+    # If less than one minute, return "Just now"
+    if minutes <= 1:
+        return "Just now"
+    # If less than an hour, return number of minutes
+    elif minutes <= 59:
+        return str(minutes) + " minutes ago"
+    # If less than a day, return number of hours
+    elif minutes <= 119:
+        return "1 hour ago"
+    elif minutes <= 1439:
+        return str(int(minutes/60)) + " hours ago"
+    # Otherwise return number of days
+    elif minutes <= 2879:
+        return "1 day ago"
+    else:
+        return str(int(minutes/1440)) + " days ago"

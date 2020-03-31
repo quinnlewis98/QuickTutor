@@ -14,6 +14,8 @@
     <!-- font awesome icon -->
       <script src="https://kit.fontawesome.com/346d3afbe8.js" crossorigin="anonymous"></script>
 
+  {% load app_extras %}
+
     <title>Feed</title>
 </head>
 <body>
@@ -65,7 +67,8 @@
   <!-- Begin feed -->
   {% if requests_list %}
     <div class="container">
-      {% for request in requests_list %}
+      <!-- This uses a custom template filter to iterate through both lists simultaneously -->
+      {% for request, time in requests_list|zip:times %}
         <div class="row" style="padding-bottom: 30px;">
           <div class="col-sm-6">
             <div class="card">
@@ -80,6 +83,7 @@
                 {% else %}
                   <em class="request-btn">{{request.user}}</em>
                 {% endif %}
+                <p class="time" style="margin-bottom: 0px; padding-bottom: 0px;">{{ time }}</p>
               </div>
               <div class="card-body">
                 <p class="card-text mode-description">{{ request.description }}</p>

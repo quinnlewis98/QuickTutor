@@ -271,6 +271,14 @@ def datetime_conversion(request):
 
     # Compute difference and convert to minutes
     delta = current_time - pub_date
+
+    # If more than a day ago, just return number of days
+    if delta.days == 1:
+        return "1 day ago"
+    elif delta.days > 1:
+        return str(delta.days) + " days ago"
+
+    # Otherwise, it's less than a day, so return number of hours or minutes
     minutes = int(delta.seconds / 60)
 
     # If less than one minute, return "Just now"
@@ -279,13 +287,8 @@ def datetime_conversion(request):
     # If less than an hour, return number of minutes
     elif minutes <= 59:
         return str(minutes) + " minutes ago"
-    # If less than a day, return number of hours
+    # Otherwise, return number of hours
     elif minutes <= 119:
         return "1 hour ago"
     elif minutes <= 1439:
         return str(int(minutes/60)) + " hours ago"
-    # Otherwise return number of days
-    elif minutes <= 2879:
-        return "1 day ago"
-    else:
-        return str(int(minutes/1440)) + " days ago"

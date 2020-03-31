@@ -200,9 +200,24 @@ def myRequest(request):
 
             # If they're trying to accept a request...
             elif request.POST.get('action') == 'Accept and Delete':
-                # Delete the request, and set boolean
+                # Get User and Request objects
                 user = get_user(request)
                 request_to_edit = Request.objects.get(user=user.email)
+
+                # Get tutor to accept
+                tutor = request.POST.get('tutor')
+
+                # Make sure that the tutor hasn't revoked their offer in the time that the tutee was viewing
+                # the page!
+                tutor_found = False
+                for tutor_in_list in request_to_edit.tutors:
+                    if tutor == tutor_in_list.email:
+                        tutor_found = True
+
+                if not tutor_found:
+                    return HttpResponseRedirect('/myRequest/')
+
+                # Delete the request, and set boolean flag
                 request_to_edit.delete()
                 user.has_active_request = False
                 user.save()

@@ -53,7 +53,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return f'{self.email} Profile'
+        return self.email
 
 
 class Request(models.Model):

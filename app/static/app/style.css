@@ -41,3 +41,18 @@
     font-style: italic;
     font-size: 14px;
 }
+
+.welcome-content {
+    padding-left: 50%;
+    padding-top: 15%;
+    color: white;
+    font-weight: 400;
+    text-align: center;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    background: rgb(0, 0, 0); /* Fallback color */
+    background: rgba(0, 0, 0, 0.5); /* Black background with 0.5 opacity */
+    width: 48%;
+    padding: 20px;
+  }

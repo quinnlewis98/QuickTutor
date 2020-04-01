@@ -64,7 +64,7 @@
                               <form action="/myRequest/" method="post" class="inline">
                                   {% csrf_token %}
                                   <input type="submit" name="action" value="Delete" class="btn btn-danger request-btn inline">
-                                  <input type="submit" name="action" value="Edit" class="btn btn-primary request-btn inline">
+                                  <input id="editButton" type="submit" name="action" value="Edit" class="btn btn-primary request-btn inline">
                               </form>
                               <p class="time">{{ time_since_request }}</p>
                           </div>
@@ -81,7 +81,7 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="tutor" value="{{ tutor.email }}">
                                             <input type="submit" name="action" value="Accept and Delete" class="btn btn-success request-btn inline">
-                                            <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
+                                            <input id="viewProfile" type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
                                           </form>
                                           </li><br>
                                     {% endfor %}

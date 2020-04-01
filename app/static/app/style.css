@@ -56,3 +56,9 @@
     width: 48%;
     padding: 20px;
   }
+
+  #viewProfile, #editButton, #offerHelp {
+    background-color: #6cbcaf;
+    border-color: #6cbcaf;
+    color: white;
+  }

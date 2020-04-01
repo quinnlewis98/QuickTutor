@@ -92,16 +92,16 @@
                     <input type="hidden" name="tutee" id="tutee" value="{{ request.user }}">
                     <!-- If you haven't offered help, display 'offer help' button -->
                     {% if user not in request.tutors.all %}
-                      <input onclick="window.alert('Offer sent.')" type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
+                      <input id="offerHelp" onclick="window.alert('Offer sent.')" type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
                     <!-- If you've already offered your help, this button should be a revoke offer button -->
                     {% else %}
                       <input onclick="window.alert('Offer revoked.')" type="submit" name="action" value="Revoke Offer" class="btn btn-danger request-btn inline">
                     {% endif %}
-                    <input type="submit" name="action" value="View Profile" class="btn btn-primary request-btn inline">
+                    <input id="viewProfile" type="submit" name="action" value="View Profile" class="btn request-btn inline">
                   </form>
                 <!-- If it's the user's own request, provide link to their request page -->
                 {% else %}
-                <a href="/myRequest/">View my request.</a>
+                <a href="/myRequest/">View my request</a>
                 {% endif %}
               </div>
             </div>

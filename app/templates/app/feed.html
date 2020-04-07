@@ -62,6 +62,15 @@
   </div>
   <!-- End jumbotron -->
 
+  <!-- Begin Search Bar -->
+<form method="GET" action="">
+  <input name="q" value="{{request.GET.q}}" placeholder="Search by Keyword...">
+  <button class="btn btn-success" type="submit">
+    Search
+  </button>
+</form>
+  <!-- End  Search Bar -->
+
   <!-- Begin feed -->
   {% if requests_list %}
     <div class="container">

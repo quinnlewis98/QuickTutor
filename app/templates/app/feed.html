@@ -63,12 +63,14 @@
   <!-- End jumbotron -->
 
   <!-- Begin Search Bar -->
-<form method="GET" action="">
-  <input name="q" value="{{request.GET.q}}" placeholder="Search by Keyword...">
-  <button class="btn searchRequests" style="background-color: #6cbcaf; border-color: #6cbcaf; color: white;" type="submit">
-    Search
-  </button>
-</form>
+<div class="searchBar" style="padding-left: 6%;">
+  <form method="GET" action="">
+    <input name="q" value="{{request.GET.q}}" placeholder="Search by Keyword...">
+    <button class="btn searchRequests" style="background-color: #6cbcaf; border-color: #6cbcaf; color: white;" type="submit">
+      Search
+    </button>
+  </form>
+</div><br>
   <!-- End  Search Bar -->
 
   <!-- Begin feed -->

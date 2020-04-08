@@ -57,7 +57,7 @@
     padding: 20px;
   }
 
-  #viewProfile, #editButton, #searchRequests {
+  #viewProfile, #editButton {
     background-color: #6cbcaf;
     border-color: #6cbcaf;
     color: white;

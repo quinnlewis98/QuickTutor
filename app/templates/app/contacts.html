@@ -8,7 +8,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <!-- Our CSS -->
-    <link rel="stylesheet" type="text/css" href="static/app/style.css">
+    <link rel="stylesheet" type="text/css" href="../../static/app/style.css">
+
+      {% load app_extras %} <!-- For zip function -->
+
     <title>Contacts</title>
   </head>
   <body>
@@ -47,16 +50,47 @@
         </div>
 
     </nav><br>
-    
-    <h1>This will display all of the user's contacts (i.e. people they have messaged in the past), and allow them
-    to lookup a new user to send messages to. See UI design. This page also won't really change based on which mode
-    they're in. </h1>
-    <ul>
-      <li> <a onclick="location.href = 'http://localhost:8000/messages/';"> <font color="blue"> Contact 1 </font> </a> </li>
-      <li> <a onclick="location.href = 'http://localhost:8000/messages/';"> <font color="blue"> Contact 2 </font> </a> </li>
-    </ul>
-    <button type="button" style="margin:5px;" class="btn btn-success btn-lg">New Message</button><br>
 
+    <div class="container">
+      <div class="row">
+        <div class="card w-75" style="margin: 10px auto;">
+          <div class="card-header" style="margin-bottom: 20px">
+            <div class="card-title"><h3>My Contacts</h3></div>
+          </div>
+          <!-- If the user has existing contacts/conversations, display them in a list below -->
+          {% if emails %}
+            <!-- Iterate through contacts and display in list -->
+            {% for email, name in emails|zip:names %}
+              <div class="row" style="margin-bottom: 20px; margin-left: 20px">
+                <p class="lead"> {{ name }} | {{ email }} </p>
+                <form action="/contacts/" method="post" style="margin-left: 20px;">
+                  {% csrf_token %}
+                  <input type="hidden" name="contact" value="{{ email }}">
+                  <input name="action" type="submit" value="Message" class="btn btn-primary">
+                </form>
+              </div>
+            {% endfor %}
+          <hr/>
+          {% endif %}
+
+    <!-- Add contact form below -->
+          <div class="row justify-content-center">
+          <p class="lead" style="margin-right: 5px;"> Add contact by email address: </p>
+          <form class="inline" action="/contacts/" method="post">
+            {% csrf_token %}
+            <div class="form-row align-items-center">
+              <div class="col-auto" style="margin-right: 5px;">
+                <input type="text" size="30" placeholder="Enter email address..." name="new_contact" class="form-control inline" style="margin-left: 5px;">
+              </div>
+              <div class="col-auto">
+                <input name="action" type="submit" value="Add" class="inline btn btn-primary">
+              </div>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

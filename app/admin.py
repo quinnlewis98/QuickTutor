@@ -1,9 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-from .models import Request, User
+from .models import Request, User, Message, Conversation
 # Register your models here.
 admin.site.register(Request)
 admin.site.register(User)
+admin.site.register(Message)
+admin.site.register(Conversation)
 
 
 class UserAdmin(DjangoUserAdmin):

@@ -57,8 +57,18 @@
     padding: 20px;
   }
 
-  #viewProfile, #editButton {
+#viewProfile, #editButton, #offerHelp {
     background-color: #6cbcaf;
     border-color: #6cbcaf;
     color: white;
-  }
+}
+
+.message {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 10px;
+    border-radius: 25px;
+    background-color: #82ccdd;
+    padding: 10px;
+    position: relative;
+}

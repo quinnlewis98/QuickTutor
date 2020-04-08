@@ -7,6 +7,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Our CSS -->
+    <link rel="stylesheet" type="text/css" href="../../static/app/style.css">
 
     <title>Messages</title>
   </head>
@@ -46,8 +48,55 @@
 
     </nav><br>
 
-    <h1>This page will display the messages between the user and another specific person (should access database and pull
-    history of messages); obviously should allow the user to type a new message</h1>
+    <div class="container">
+      <div class="row"><a href="/contacts/">< Return to My Contacts</a></div>
+      <div class="row">
+        <div class="card w-75" style="margin: 10px auto; padding-bottom: 10px;">
+          <div class="card-header" style="margin-bottom: 10px;">
+            <div class="card-title"><h3>Messages with {{ other_user.get_full_name }}</h3></div>
+          </div>
+          <!-- If the user has messages with this person, display them -->
+          {% if messages %}
+            <!-- Iterate through messages -->
+            {% for message in messages %}
+              <!-- See if it is the user's message or the other user's to determine which side to display it on -->
+              {% if message.sender.email == user.email %}
+                <!-- Display on right side -->
+                <div class="d-md-flex justify-content-end">
+                  <div class="message"> {{ message.content }} </div>
+                </div>
+              <!-- Else, display on left side -->
+              {% else %}
+                <div class="d-md-flex justify-content-start">
+                  <div class="message"> {{ message.content }} </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+          <div class="container">
+            <p class="lead">No messages to display. Type a new message below.</p>
+          </div>
+          {% endif %}
+
+          <!-- Display form to type a new message below -->
+          <br/>
+          <form action="/messages/" method="post">
+            {% csrf_token %}
+            <div class="form-row justify-content-center">
+              <div class="col-auto" style="margin-right: 5px;">
+                <textarea name='message' class="form-control" rows="3" cols="80" placeholder="Type a new message here..."></textarea>
+              </div>
+              <div class="col-auto">
+                <input type="hidden" name="receiver" value="{{ other_user.email }}">
+                <input name="action" type="submit" value="Send" class="inline btn btn-primary">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -8,6 +8,7 @@ from .models import *
 from .forms import *
 from django.contrib import messages
 import datetime
+import requests as rq
 
 
 # Rendering views
@@ -229,8 +230,39 @@ def myRequest(request):
                 user.has_active_request = False
                 user.save()
 
-                # It should automatically add the tutor as a contact and direct you to a message with them!
-                return HttpResponseRedirect('/contacts/')
+                # Get the tutor's User object
+                tutor_user = User.objects.get(email=tutor)
+
+                # If the tutor is not in the user's contacts, add the tutor
+                if tutor_user not in user.contacts.all():
+                    user.contacts.add(tutor_user)
+                    user.save()
+                    # Create a new Conversation object with them (need to save before adding participants)
+                    conversation = Conversation()
+                    conversation.save()
+                    conversation.participants.add(user)
+                    conversation.participants.add(tutor_user)
+                    conversation.save()
+
+                # If the user is not in the tutor's contacts, add the user (pretty much guaranteed to happen)
+                if user not in tutor_user.contacts.all():
+                    tutor_user.contacts.add(user)
+                    tutor_user.save()
+
+                # Call helper method to get the correct Conversation object
+                conversation = getConversation(user.email, tutor)
+
+                # Get the last 50 messages, ordered from oldest to most recent
+                messages = conversation.messages.all().order_by('timestamp')[:50]
+
+                context = {
+                    'user': user,
+                    'other_user': tutor_user,
+                    'messages': messages,
+                }
+
+                # Send to messages page with this tutor!
+                return render(request, 'app/messages.html', context)
 
             # If it's a 'logout' request...
             elif request.POST.get('action') == 'Logout':
@@ -240,6 +272,7 @@ def myRequest(request):
         # Else, a GET request. just loading the page
         else:
             user = get_user(request)
+
             # If the user has a request, get it and pass it to the view for display
             if user.has_active_request:
                 my_request = Request.objects.get(user=user.email)
@@ -294,23 +327,154 @@ def profile(request):
 
 
 def contacts(request):
+    # Check if logged in
     if request.user.is_authenticated:
         # handle post request
         if request.method == 'POST':
+            # If it's a 'message' request...
+            if request.POST.get('action') == 'Message':
+                # Get the conversation object associated with this person.
+                user = get_user(request)
+                user_email = user.email
+                other_user_email = request.POST.get('contact')
+
+                # Call helper method to get the correct Conversation object
+                conversation = getConversation(user_email, other_user_email)
+
+                # Get the last 50 messages, ordered from oldest to most recent
+                messages = conversation.messages.all().order_by('timestamp')[:50]
+
+                # Get the other user
+                other_user = User.objects.filter(email=other_user_email)[0]
+
+                context = {
+                    'user': user,
+                    'other_user': other_user,
+                    'messages': messages,
+                }
+
+                return render(request, 'app/messages.html', context)
+
+            # If it's an 'Add' (contact) request...
+            if request.POST.get('action') == 'Add':
+                # Get user
+                user = get_user(request)
+
+                # Get contact to add
+                contact_to_add_email = request.POST.get('new_contact')
+                contact_exists = User.objects.filter(email=contact_to_add_email).exists()
+
+                # If a user with this email does not exist, or if you're trying to add yourself,
+                # just redirect to contacts page
+                if (not contact_exists or contact_to_add_email == user.email):
+                    return HttpResponseRedirect('/contacts/')
+
+                # Otherwise, check to see if this user is already a contact
+                else:
+                    contact_to_add = User.objects.get(email=contact_to_add_email)
+                    # If user is already a contact, just redirect to contacts page
+                    if contact_to_add in user.contacts.all():
+                        return HttpResponseRedirect('/contacts/')
+                    # If user is not already a contact...
+                    else:
+                        # Add as contact
+                        user.contacts.add(contact_to_add)
+                        user.save()
+
+                        # Add this user as contact for other user
+                        if (user not in contact_to_add.contacts.all()):
+                            contact_to_add.contacts.add(user)
+                            contact_to_add.save()
+
+                        # Create a new Conversation with them (need to save before adding participants)
+                        conversation = Conversation()
+                        conversation.save()
+                        conversation.participants.add(user)
+                        conversation.participants.add(contact_to_add)
+                        conversation.save()
+
+                        return HttpResponseRedirect('/contacts/')
+
             # If it's a 'logout' request...
             if request.POST.get('action') == 'Logout':
                 logout(request)
                 return HttpResponseRedirect('/')
+
         # handle get request
         else:
-            return render(request, 'app/contacts.html')
+            # Get current user to fetch list of contacts
+            user = get_user(request)
+
+            # Fetch list of contacts (query set of user objects)
+            contacts_users = user.contacts.all()
+
+            # Convert into list of emails and names
+            emails = []
+            names = []
+            for contact in contacts_users:
+                email = contact.email
+                emails.append(email)
+                name = contact.get_full_name()
+                names.append(name)
+
+            # Set context
+            context = {
+                'emails': emails,
+                'names': names,
+            }
+
+            return render(request, 'app/contacts.html', context)
+    # If not logged in, send to login page
     else:
         return HttpResponseRedirect('/')
 
 
 def messages(request):
+    # Check if user is logged in
     if request.user.is_authenticated:
-        return render(request, 'app/messages.html')
+        # If post request...
+        if request.method == 'POST':
+            # If it is a 'Send' (message) request
+            if request.POST.get('action') == 'Send':
+                # Get user
+                user = get_user(request)
+
+                # Get receiver
+                receiver_email = request.POST.get('receiver')
+                receiver = User.objects.get(email=receiver_email)
+
+                # Get message content
+                msg_content = request.POST.get('message')
+
+                # Create a new Message
+                message = Message()
+                message.timestamp = timezone.now()
+                message.sender = user
+                message.receiver = receiver
+                message.content = msg_content
+                message.save()
+
+                # Call helper method to get the correct Conversation object
+                conversation = getConversation(user.email, receiver_email)
+
+                # Add message to the conversation
+                conversation.messages.add(message)
+
+                # Get the last 50 messages, ordered from oldest to most recent
+                messages = conversation.messages.all().order_by('timestamp')[:50]
+
+                context = {
+                    'user': user,
+                    'other_user': receiver,
+                    'messages': messages,
+                }
+
+                return render(request, 'app/messages.html', context)
+
+        # handle get request
+        else:
+            return render(request, 'app/messages.html')
+    # If not logged in, send to login page
     else:
         return HttpResponseRedirect('/')
 
@@ -366,3 +530,14 @@ def calculate_timestamp(request):
         return "1 hour ago"
     elif minutes <= 1439:
         return str(int(minutes/60)) + " hours ago"
+
+
+# Helper method that takes two email addresses and finds the Conversation object between these two
+def getConversation(user1, user2):
+    # Get the conversations involving user1
+    all_conversations_user1 = Conversation.objects.filter(participants__email=user1)
+
+    # Filter these conversations by the other user to get the single conversation between these two users
+    conversation = all_conversations_user1.filter(participants__email=user2)[0]
+
+    return conversation

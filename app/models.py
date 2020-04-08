@@ -40,6 +40,9 @@ class User(AbstractUser):
     email = models.EmailField(('email address'), unique=True)
     username = models.CharField(default="None", max_length=15)
     description = models.CharField(default='New User',max_length=200)
+
+    # messaging stuff
+    contacts = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     
     # profile picture field
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
@@ -68,8 +71,27 @@ class Request(models.Model):
         return self.title
 
 
+class Message(models.Model):
+    # Sender - many messages relate to one user
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sender')
+
+    # Receiver - many messages relate to one user
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='receiver')
+
+    # Message content
+    content = models.CharField(max_length=1000)
+
+    # Timestamp
+    timestamp = models.DateTimeField('timestamp')
+
+
 class Conversation(models.Model):
-    # need a field that maps the conversation to both users
-    # need a field that tracks the list of sent messages
-    pass
+    # Maps the conversation to both users
+    participants = models.ManyToManyField(settings.AUTH_USER_MODEL)
+
+    # Tracks the list of messages in this conversation
+    messages = models.ManyToManyField(Message)
+
+
+
 

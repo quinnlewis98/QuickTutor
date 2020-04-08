@@ -62,6 +62,17 @@
   </div>
   <!-- End jumbotron -->
 
+  <!-- Begin Search Bar -->
+<div class="searchBar" style="padding-left: 6%;">
+  <form method="GET" action="">
+    <input name="q" value="{{request.GET.q}}" placeholder="Search by Keyword...">
+    <button class="btn searchRequests" style="background-color: #6cbcaf; border-color: #6cbcaf; color: white;" type="submit">
+      Search
+    </button>
+  </form>
+</div><br>
+  <!-- End  Search Bar -->
+
   <!-- Begin feed -->
   {% if requests_list %}
     <div class="container">
@@ -92,7 +103,7 @@
                     <input type="hidden" name="tutee" id="tutee" value="{{ request.user }}">
                     <!-- If you haven't offered help, display 'offer help' button -->
                     {% if user not in request.tutors.all %}
-                      <input id="offerHelp" onclick="window.alert('Offer sent.')" type="submit" name="action" value="Offer Help" class="btn btn-primary request-btn inline">
+                      <input onclick="window.alert('Offer sent.')" type="submit" name="action" value="Offer Help" class="btn btn-success request-btn inline">
                     <!-- If you've already offered your help, this button should be a revoke offer button -->
                     {% else %}
                       <input onclick="window.alert('Offer revoked.')" type="submit" name="action" value="Revoke Offer" class="btn btn-danger request-btn inline">

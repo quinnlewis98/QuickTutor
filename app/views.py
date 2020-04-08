@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.contrib.auth import get_user
 from django.contrib.auth import logout
+from django.db.models import Q
 from .models import *
 from .forms import *
 from django.contrib import messages
@@ -87,7 +88,11 @@ def feed(request):
         # handle get request
         else:
             # Get list of requests, ordered by publication date/time
-            requests_list = Request.objects.order_by('-pub_date')[:]
+            if 'q' in request.GET:
+                query = request.GET.get('q')
+                requests_list = Request.objects.order_by('-pub_date')[:].filter(Q(title__icontains=query) | Q(description__icontains=query))
+            else:  
+                requests_list = Request.objects.order_by('-pub_date')[:]
 
             # Compute time since each request was published, and store in list in identical order
             times = []
